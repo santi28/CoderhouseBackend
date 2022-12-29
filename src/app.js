@@ -1,20 +1,17 @@
-import path from 'path'
-import http from 'http'
-
 import express, { Router } from 'express'
-import handlebars from 'express-handlebars'
-import { Server } from 'socket.io'
 
 import Contenedor from './Contenedor.js'
+import { options } from './config/mariaDB.js'
+// import { createCartTable, createProductsTable } from './scripts/createTables.js'
 
 const app = express()
-const server = http.createServer(app)
-const io = new Server(server)
 const PORT = process.env.PORT || 8080
 
-const productsContainer = new Contenedor('./data/products.json')
-const chatContainer = new Contenedor('./data/chat.json')
-const cartContainer = new Contenedor('./data/cart.json')
+// createCartTable()
+// createProductsTable()
+
+const productsContainer = new Contenedor(options, 'products')
+const cartContainer = new Contenedor(options, 'cart')
 
 const productsRouter = Router()
 const cartRouter = Router()
@@ -26,20 +23,7 @@ const authMiddleware = (req, res, next) => {
   return res.status(401).json({ error: 401, message: 'Unauthorized' })
 }
 
-// Configuración de handlebars
-app.engine(
-  'hbs',
-  handlebars.engine({
-    extname: '.hbs',
-    defaultLayout: 'index.hbs',
-    layoutsDir: path.join(__dirname, '/views/layouts'),
-    partialsDir: path.join(__dirname, '/views/partials')
-  })
-)
-
 // Middlewares
-app.set('view engine', 'hbs')
-app.set('views', './src/views')
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -47,46 +31,6 @@ app.use(express.urlencoded({ extended: true }))
 // Routes
 app.use('/api/products', productsRouter)
 app.use('/api/cart', cartRouter)
-
-// Static files
-app.use(express.static(path.join(__dirname, 'public')))
-
-// #region Websockets
-io.on('connection', async (socket) => {
-  console.log('👨‍🚀 New client connected')
-
-  const productos = await productsContainer.getAll()
-  socket.emit('productos', productos)
-
-  const messages = await chatContainer.getAll()
-  socket.emit('messages', messages)
-
-  socket.on('new-product', async (data) => {
-    const productId = await productsContainer.save(data)
-    const product = await productsContainer.getById(productId)
-
-    io.sockets.emit('update-products', product)
-  })
-
-  socket.on('new-message', async ({ senderMail, message }) => {
-    const messageId = await chatContainer.save({
-      senderMail,
-      message,
-      date: new Date().getTime()
-    })
-    const chatMessage = await chatContainer.getById(messageId)
-
-    io.sockets.emit('update-messages', chatMessage)
-  })
-
-  socket.on('disconnect', () => console.log('🚀 Client disconnected'))
-})
-// #endregion
-
-app.get('/', async (req, res) => {
-  const productos = await productsContainer.getAll()
-  res.render('main', { productos })
-})
 
 // #region Products Router
 productsRouter.get('/:id?', async (req, res) => {

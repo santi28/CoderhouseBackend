@@ -3,7 +3,7 @@ export const options = {
   connection: {
     host: 'localhost',
     user: 'root',
-    password: 'root',
+    password: '',
     database: 'coderhouse'
   }
 }
