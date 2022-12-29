@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    {{!-- Google Fonts --}}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500&display=swap" rel="stylesheet">
+
+    {{!-- Tailwind CSS --}}
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script src="/socket.io/socket.io.js"></script>
+
+    <title>Listado de productos</title>
+    <style> 
+      body { font-family: 'Outfit', Helvetica, sans-serif; }
+
+      main {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        grid-template-rows: repeat(6, auto);
+        gap: 20px;
+      }
+
+      .form {
+        grid-column: 1 / 13;
+        height: fit-content;
+      }
+
+      .chat {
+        grid-column: 1 / 13;
+        height: fit-content;
+      }
+
+      .products {
+        grid-column: 1 / 13;
+        height: fit-content;
+      }
+
+      @media (min-width: 1024px){
+        .form {
+          grid-column: 1 / 5;
+        }
+
+        .chat {
+          grid-column: 1 / 5;
+        }
+
+        .products {
+          grid-column: 5 / 13;
+          grid-row: 1 / 7;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header
+      class="w-full p-4 text-lg text-center text-white bg-zinc-900">
+      Listador de productos
+    </header>
+
+    <main class="mx-5 my-6 md:mx-12">
+      <form method="post" id="productForm"
+        class="flex flex-col w-full gap-2 form">
+        <h2 class="text-xl italic">Cargar producto</h2>
+        <label for="title">Titulo:</label>
+        <input type="text" name="title" id="title" required 
+          class="text-zinc-900 text-sm rounded-lg outline-none w-full p-2.5 border border-zinc-400 transition-all focus:ring focus:ring-blue-500">
+
+        <label for="price">Precio:</label>
+        <input type="number" name="price" id="price" required
+          class="text-zinc-900 text-sm rounded-lg outline-none w-full p-2.5 border border-zinc-400 transition-all focus:ring focus:ring-blue-500">
+        
+        <label for="thumbnail">Imagen:</label>
+        <input type="text" name="thumbnail" id="thumbnail" required
+          class="text-zinc-900 text-sm rounded-lg outline-none w-full p-2.5 border border-zinc-400 transition-all focus:ring focus:ring-blue-500">
+        
+        <button type="submit"
+          class="text-zinc-100 text-sm rounded-lg outline-none w-full p-2.5 bg-indigo-800">
+          Agregar producto</button>
+      </form>
+      <div class="products">
+        {{#if productos.[0]}}
+          <div class="grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 h-fit" id="productContainer">
+            <h2 class="text-xl italic col-span-full">Listado de productos</h2>
+          </div>
+        {{else}}
+          <h2 class="w-full text-xl text-center">No hay productos disponibles para mostrar</h2>
+        {{/if}} 
+      </div>
+      <div class="flex flex-col gap-2 chat" id="chat">
+        <h2 class="text-xl italic">Centro de mensajes</h2>
+        <input type="email" placeholder="Ingrese su email" required id="chatEmail"
+          class="text-zinc-900 text-sm rounded-lg outline-none w-full p-2.5 border border-zinc-400 transition-all focus:ring focus:ring-blue-500">
+        <hr>
+        <div class="flex flex-col gap-2 overflow-auto max-h-64" id="chatWrapper">
+          
+        </div>
+      </div>
+    </main>
+    <script>
+      let mailId = '';
+
+      const Product = (title, price, thumbnail) => {
+        const article = document.createElement('article')
+
+        article.innerHTML = `
+          <img class="object-cover w-full mb-2 rounded-lg aspect-video" src="${thumbnail}" alt="${title}">
+          <h3 class="text-lg">${title}</h3>
+          <span class="italic text-zinc-500">$${price}</span>
+        `
+        
+        return article
+      }
+
+      const ChatForm = () => {
+        const form = document.createElement('form')
+        form.classList.add('flex', 'w-full', 'gap-4')
+        form.setAttribute('id', 'chatForm')
+
+        form.innerHTML = `
+          <input type="text" placeholder="Ingrese su mensaje" required
+            class="text-zinc-900 text-sm rounded-lg outline-none w-full p-2.5 border border-zinc-400 transition-all focus:ring focus:ring-blue-500">
+          
+          <button type="submit"
+            class="text-zinc-100 text-sm rounded-lg outline-none w-28 p-2.5 bg-indigo-800">
+            Enviar</button>
+        `
+
+        return form
+      }
+
+      const ChatMessage = (sender, message, timestamp) => {
+        const chatMessage = document.createElement('div')
+        chatMessage.classList.add('flex', 'flex-col', 'w-full', 'p-2', 'rounded-xl')
+
+        if (sender === mailId) {
+          chatMessage.classList.add('self-end', 'bg-green-200', 'rounded-br-none')
+        } else {
+          chatMessage.classList.add('bg-zinc-200', 'rounded-bl-none')
+        }
+
+        chatMessage.innerHTML = `
+          <p class="w-full">${message}</p>
+          <span class="text-zinc-600">${sender} • <i>${timestamp}</i></span>
+        `
+
+        return chatMessage
+      }
+
+      const formatHour = (date) => {
+        const today = new Date()
+        const messageDate = new Date(date)
+
+        if (today.getDate() === messageDate.getDate()) {
+          return `${messageDate.getHours()}:${messageDate.getMinutes()}`
+        } else {
+          return `${messageDate.getDate()}/${messageDate.getMonth()}/${messageDate.getFullYear()} ${messageDate.getHours()}:${messageDate.getMinutes()}`
+        }
+      }
+
+      const socket = io();
+
+      socket.on('productos', (data) => {
+        const productContainer = document.getElementById('productContainer')
+        data.map(({ title, price, thumbnail }) => {
+          productContainer.appendChild(Product(title, price, thumbnail))
+        })
+      })
+
+      socket.on('messages', (data) => {
+        const chatContainer = document.getElementById('chatWrapper')
+        data.map(({ senderMail, message, date }) => {
+          
+          
+
+          chatContainer.appendChild(ChatMessage(senderMail, message, formatHour(date)))
+        })
+      })
+
+      const productForm = document.getElementById('productForm')
+      productForm.addEventListener('submit', (e) => {
+        e.preventDefault()
+
+        const title = document.getElementById('title').value
+        const price = document.getElementById('price').value
+        const thumbnail = document.getElementById('thumbnail').value
+
+        socket.emit('new-product', { title, price, thumbnail })
+      })
+
+      socket.on('update-products', (data) => {
+        const productContainer = document.getElementById('productContainer')
+        productContainer.appendChild(Product(data.title, data.price, data.thumbnail))
+      })
+
+      socket.on('update-messages', (data) => {
+        const chatContainer = document.getElementById('chatWrapper')
+        chatContainer.appendChild(ChatMessage(data.senderMail, data.message, formatHour(data.date)))
+      });
+
+      const chatEmail = document.getElementById('chatEmail')
+      const chat = document.getElementById('chat')
+
+      chatEmail.addEventListener('change', (e) => {
+        const { value } = e.target;
+
+        // En caso de que value sea un email valido, se muestra el form de chat
+        const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g
+        if (emailRegex.test(value)) {
+          mailId = value
+          const chatForm = ChatForm()
+          chat.appendChild(chatForm)
+
+          chatForm.addEventListener('submit', (e) => {
+            e.preventDefault()
+
+            const message = chatForm.querySelector('input').value
+            socket.emit('new-message', { senderMail: mailId, message })
+          })
+        } else {
+          const chatForm = document.getElementById('chatForm')
+          chatForm && chatForm.remove()
+          mailId = ''
+        }
+      })
+    </script>
+  </body>
+</html>
