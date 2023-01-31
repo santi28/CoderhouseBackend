@@ -1,3 +1,8 @@
+// Inicializa las configuraciones del entorno
+import dotenv from 'dotenv'
+dotenv.config()
+
+
 import path from 'path'
 import http from 'http'
 import { fileURLToPath } from 'url'
@@ -7,12 +12,17 @@ import handlebars from 'express-handlebars'
 import { Server } from 'socket.io'
 
 import { createProductsTable, createChatTable } from './scripts/seed.js'
-import { mariadb, sqlite } from './config/index.js'
+import { sqlite, mongodb } from './config/index.js'
 import Container from './containers/sql.container.js'
+
+// DAO Import
+import { ProductsDAO } from './daos/index.js'
+
 
 const app = express()
 const server = http.createServer(app)
 const io = new Server(server)
+mongodb() // Inicializa la conexión a MongoDB
 
 const PORT = process.env.PORT || 3000
 const __filename = fileURLToPath(import.meta.url)
@@ -24,11 +34,7 @@ const authMiddleware = (req, res, next) => {
   return res.status(401).json({ error: 401, message: 'Unauthorized' })
 }
 
-// Utilizamos los scripts de creación
-createProductsTable()
-createChatTable()
-
-const productsContainer = new Container(mariadb, 'products')
+const productsContainer = new ProductsDAO()
 const chatContainer = new Container(sqlite, 'chat')
 
 const productsRouter = Router()
@@ -59,7 +65,7 @@ productsRouter.get('/:id?', async (req, res) => {
   const { id } = req.params
 
   if (id) {
-    const product = await productsContainer.getById(+id)
+    const product = await productsContainer.getById(id)
     if (!product)
       return res.status(404).json({ error: 404, message: 'Product not found' })
 

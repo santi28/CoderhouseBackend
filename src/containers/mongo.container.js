@@ -1,45 +1,31 @@
+
 class Contenedor {
-  /** @param {string} collection */
-  constructor(collection) {
-    // Establece una conexión con la base de datos utilizando mongoose y las env
-    // variables de conexión definidas en el archivo .env
-    this.mongoose = mongoose.connect(process.env.MONGO_URL, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    })
-    
+  constructor(model) {
+    /** @type {Model} */
+    this.model = model
   }
-
-  /** Guarda un objeto y devuelve su ID
-   * @param {CustomObject} object
-   * @returns {Promise<number>}
-   */
-  async save(productBody) {
-    try {
-      return await this.knex(this.table).insert(productBody)
-    } catch (error) {
-      throw new Error(error)
-    }
-  }
-
-  /** Devuelve un elemento en base a un ID
-   * @param {number} id
-   * @returns {Promise<CustomObject>}
-   */
   async getById(id) {
     try {
-      return this.knex.select('*').from(this.table).where('id', id)
+      return await this.model.findById(id)
     } catch (error) {
       throw new Error(error)
     }
   }
 
-  /** Retrona todos los elementos
-   * @returns {Promise<CustomObject[]>}
-   */
   async getAll() {
     try {
-      return this.knex.select('*').from(this.table)
+      return await this.model.find()
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
+  async save(item) {
+    try {
+      const newItem = new this.model(item)
+      await newItem.save()
+
+      return newItem
     } catch (error) {
       throw new Error(error)
     }
@@ -49,9 +35,9 @@ class Contenedor {
    * @param {CustomObject} produ
    * @returns {Promise<number>}
    */
-  async updateById(id, productBody) {
+  async updateById(id, item) {
     try {
-      return this.knex(this.table).where('id', id).update(productBody)
+      return await this.model.findByIdAndUpdate(id, item);
     } catch (error) {
       throw new Error(error)
     }
@@ -62,7 +48,7 @@ class Contenedor {
    */
   async deleteById(id) {
     try {
-      return this.knex.delete().from(this.table).where('id', id)
+      return await this.model.findByIdAndDelete(id)
     } catch (error) {
       throw new Error(error)
     }
@@ -71,18 +57,9 @@ class Contenedor {
   /** Borra todos los elementos */
   async deleteAll() {
     try {
-      return this.knex.delete().from(this.tabla)
+      return await this.model.deleteMany()
     } catch (error) {
       throw new Error(error)
-    }
-  }
-
-  /** Realiza la desconección de la DB */
-  async disconnect() {
-    try {
-      return this.knex.destroy()
-    } catch (error) {
-      throw new Error(`Error al desconectarse: ${error}`)
     }
   }
 }

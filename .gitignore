@@ -1,4 +1,5 @@
 node_modules
 mariadb_data
+data
 
 .env

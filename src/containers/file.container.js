@@ -1,11 +1,9 @@
+// TODO: Migrar funcionalidad a typescript
 import fs from 'fs'
 
 class Contenedor {
-  /** @typedef {{id: number, [key: string]: string}} CustomObject */
-
   filename = 'data.json'
 
-  /** @param {string} filename */
   constructor(filename) {
     this.filename = filename ?? 'data.json'
 
@@ -18,10 +16,6 @@ class Contenedor {
     }
   }
 
-  /** Guarda un objeto y devuelve su ID
-   * @param {CustomObject} object
-   * @returns {Promise<number>}
-   */
   async save(object) {
     const objects = await this.getAll()
 
@@ -38,18 +32,11 @@ class Contenedor {
     }
   }
 
-  /** Devuelve un elemento en base a un ID
-   * @param {number} id
-   * @returns {Promise<CustomObject>}
-   */
   async getById(id) {
     const objects = await this.getAll()
     return objects.find((object) => object.id === id)
   }
 
-  /** Retrona todos los elementos
-   * @returns {Promise<CustomObject[]>}
-   */
   async getAll() {
     try {
       const objects = await fs.promises.readFile(this.filename)
@@ -59,10 +46,6 @@ class Contenedor {
     }
   }
 
-  /** Actualiza un elemento en base a un ID
-   * @param {CustomObject} produ
-   * @returns {Promise<number>}
-   */
   async updateById(id, gettedProduct) {
     try {
       // Verificamos que el producto exista
@@ -94,9 +77,6 @@ class Contenedor {
     }
   }
 
-  /** Borra un elemento en base a su id
-   * @param {number} id
-   */
   async deleteById(id) {
     const objects = await this.getAll()
     const newObjectsArray = objects.filter((object) => object.id !== id)
@@ -111,7 +91,6 @@ class Contenedor {
     }
   }
 
-  /** Borra todos los elementos */
   async deleteAll() {
     try {
       await fs.promises.writeFile(this.filename, '[]')
