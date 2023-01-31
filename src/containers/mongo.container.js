@@ -1,30 +1,13 @@
-import knex from 'knex'
-
 class Contenedor {
-  /** @param {string} filename */
-  constructor(connectionConfig, table) {
-    // this.knex = knex({
-    //   client: 'mysql',
-    //   connection: {
-    //     host: 'localhost',
-    //     user: 'root',
-    //     password: '',
-    //     database: 'coderhouse',
-    //     connectionTimeout: 10000
-    //   }
-    // })
-    //   .on('connection', () => console.log('DB Connected'))
-    //   .on('error', (error) => console.log('DB Error', error))
-
-    // Utilizar knex para conectarse a la base de datos y hacer un log cuando
-    // se establezca la conexión, imprimir un error si no se puede conectar
-    this.knex = knex(connectionConfig)
-      .on('connection', () => console.log('DB Connected'))
-      .on('error', (error) => console.log('DB Error', error))
-      .on('disconnected', () => console.log('DB Disconnected'))
-      .on('reconnecting', () => console.log('DB Reconnecting'))
-
-    this.table = table
+  /** @param {string} collection */
+  constructor(collection) {
+    // Establece una conexión con la base de datos utilizando mongoose y las env
+    // variables de conexión definidas en el archivo .env
+    this.mongoose = mongoose.connect(process.env.MONGO_URL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    })
+    
   }
 
   /** Guarda un objeto y devuelve su ID

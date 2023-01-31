@@ -8,7 +8,7 @@ import { Server } from 'socket.io'
 
 import { createProductsTable, createChatTable } from './scripts/seed.js'
 import { mariadb, sqlite } from './config/index.js'
-import Container from './containers/SQLContainer.js'
+import Container from './containers/sql.container.js'
 
 const app = express()
 const server = http.createServer(app)
