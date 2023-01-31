@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1,
+    "name": "Camiseta Argentina Copa Mundial FIFA 2022",
+    "description": "Camiseta Argentina con el diseño de la camiseta usada en la FIFA World Cup Qatar 2022",
+    "code": "B22",
+    "picture": "https://d3ugyf2ht6aenh.cloudfront.net/stores/001/312/744/products/aesrdhtfjgkuhijokldxfghjklk1-be8ca737b20fe0f2f716595594614188-1024-1024.webp",
+    "price": 4500,
+    "stock": 18,
+    "timestamp": 1671564007369
+  },
+  {
+    "id": 2,
+    "name": "Camiseta Argentina Copa Mundial FIFA 2022 Campeones del Mundo",
+    "description": "Camiseta Argentina con la tercera estrella ganada durante la Copa Mundial FIFA 2022",
+    "code": "E22",
+    "picture": "https://www.cronista.com/files/image/497/497851/63a05605d886b.jpg",
+    "price": 6500,
+    "stock": 8,
+    "timestamp": 1671564095137
+  }
+]
