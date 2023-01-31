@@ -16,7 +16,7 @@ import { sqlite, mongodb } from './config/index.js'
 import Container from './containers/sql.container.js'
 
 // DAO Import
-import { ProductsDAO } from './daos/index.js'
+import { CartsDAO, ProductsDAO } from './daos/index.js'
 
 
 const app = express()
@@ -35,9 +35,12 @@ const authMiddleware = (req, res, next) => {
 }
 
 const productsContainer = new ProductsDAO()
+const cartContainer = new CartsDAO()
+
 const chatContainer = new Container(sqlite, 'chat')
 
 const productsRouter = Router()
+const cartRouter = Router()
 
 // Configuración de handlebars
 app.engine(
@@ -59,6 +62,7 @@ app.use(express.urlencoded({ extended: true }))
 
 // Routes
 app.use('/api/products', productsRouter)
+app.use('/api/cart', cartRouter)
 
 // #region Products Router
 productsRouter.get('/:id?', async (req, res) => {
@@ -121,6 +125,75 @@ productsRouter.put('/:id', async (req, res) => {
 productsRouter.delete('/:id', async (req, res) => {
   const { id } = req.params
   await productsContainer.deleteById(+id)
+
+  return res.status(204).end()
+})
+// #endregion
+
+// #region Cart Router
+cartRouter.post('/', async (req, res) => {
+  const cartId = await cartContainer.save({
+    products: [],
+    createdAt: Date.now(),
+    updatedAt: Date.now()
+  })
+
+  return res.status(201).json({ cartId })
+})
+
+cartRouter.delete('/:id', async (req, res) => {
+  const { id } = req.params
+
+  await cartContainer.deleteById(+id)
+
+  return res.status(204).end()
+})
+
+cartRouter.get('/:id/products', async (req, res) => {
+  const { id } = req.params
+
+  const cart = await cartContainer.getById(id)
+
+  if (!cart)
+    return res.status(404).json({ error: 404, message: 'Cart not found' })
+
+  return res.json(cart.products)
+})
+
+cartRouter.post('/:id/products', async (req, res) => {
+  const { id } = req.params
+  const { productId } = req.body
+
+  const product = await productsContainer.getById(productId)
+
+  if (!product)
+    return res.status(404).json({ error: 404, message: 'Product not found' })
+
+  const cart = await cartContainer.getById(id)
+
+  if (!cart)
+    return res.status(404).json({ error: 404, message: 'Cart not found' })
+
+  cart.products.push(product)
+  cart.updatedAt = Date.now()
+
+  await cartContainer.updateById(id, cart)
+
+  return res.status(201).json(cart)
+})
+
+cartRouter.delete('/:id/products/:idProd', async (req, res) => {
+  const { id, idProd } = req.params
+
+  const cart = await cartContainer.getById(id)
+
+  if (!cart)
+    return res.status(404).json({ error: 404, message: 'Cart not found' })
+
+  cart.products = cart.products.filter((prod) => prod.id !== idProd)
+  cart.updatedAt = Date.now()
+
+  await cartContainer.updateById(id, cart)
 
   return res.status(204).end()
 })
