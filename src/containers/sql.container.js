@@ -3,19 +3,6 @@ import knex from 'knex'
 class Contenedor {
   /** @param {string} filename */
   constructor(connectionConfig, table) {
-    // this.knex = knex({
-    //   client: 'mysql',
-    //   connection: {
-    //     host: 'localhost',
-    //     user: 'root',
-    //     password: '',
-    //     database: 'coderhouse',
-    //     connectionTimeout: 10000
-    //   }
-    // })
-    //   .on('connection', () => console.log('DB Connected'))
-    //   .on('error', (error) => console.log('DB Error', error))
-
     // Utilizar knex para conectarse a la base de datos y hacer un log cuando
     // se establezca la conexión, imprimir un error si no se puede conectar
     this.knex = knex(connectionConfig)

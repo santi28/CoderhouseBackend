@@ -1,3 +1,8 @@
+// Inicializa las configuraciones del entorno
+import dotenv from 'dotenv'
+dotenv.config()
+
+
 import path from 'path'
 import http from 'http'
 import { fileURLToPath } from 'url'
@@ -7,12 +12,17 @@ import handlebars from 'express-handlebars'
 import { Server } from 'socket.io'
 
 import { createProductsTable, createChatTable } from './scripts/seed.js'
-import { mariadb, sqlite } from './config/index.js'
-import Container from './containers/SQLContainer.js'
+import { sqlite, mongodb } from './config/index.js'
+import Container from './containers/sql.container.js'
+
+// DAO Import
+import { CartsDAO, ProductsDAO } from './daos/index.js'
+
 
 const app = express()
 const server = http.createServer(app)
 const io = new Server(server)
+mongodb() // Inicializa la conexión a MongoDB
 
 const PORT = process.env.PORT || 3000
 const __filename = fileURLToPath(import.meta.url)
@@ -24,14 +34,13 @@ const authMiddleware = (req, res, next) => {
   return res.status(401).json({ error: 401, message: 'Unauthorized' })
 }
 
-// Utilizamos los scripts de creación
-createProductsTable()
-createChatTable()
+const productsContainer = new ProductsDAO()
+const cartContainer = new CartsDAO()
 
-const productsContainer = new Container(mariadb, 'products')
 const chatContainer = new Container(sqlite, 'chat')
 
 const productsRouter = Router()
+const cartRouter = Router()
 
 // Configuración de handlebars
 app.engine(
@@ -53,13 +62,14 @@ app.use(express.urlencoded({ extended: true }))
 
 // Routes
 app.use('/api/products', productsRouter)
+app.use('/api/cart', cartRouter)
 
 // #region Products Router
 productsRouter.get('/:id?', async (req, res) => {
   const { id } = req.params
 
   if (id) {
-    const product = await productsContainer.getById(+id)
+    const product = await productsContainer.getById(id)
     if (!product)
       return res.status(404).json({ error: 404, message: 'Product not found' })
 
@@ -115,6 +125,75 @@ productsRouter.put('/:id', async (req, res) => {
 productsRouter.delete('/:id', async (req, res) => {
   const { id } = req.params
   await productsContainer.deleteById(+id)
+
+  return res.status(204).end()
+})
+// #endregion
+
+// #region Cart Router
+cartRouter.post('/', async (req, res) => {
+  const cartId = await cartContainer.save({
+    products: [],
+    createdAt: Date.now(),
+    updatedAt: Date.now()
+  })
+
+  return res.status(201).json({ cartId })
+})
+
+cartRouter.delete('/:id', async (req, res) => {
+  const { id } = req.params
+
+  await cartContainer.deleteById(+id)
+
+  return res.status(204).end()
+})
+
+cartRouter.get('/:id/products', async (req, res) => {
+  const { id } = req.params
+
+  const cart = await cartContainer.getById(id)
+
+  if (!cart)
+    return res.status(404).json({ error: 404, message: 'Cart not found' })
+
+  return res.json(cart.products)
+})
+
+cartRouter.post('/:id/products', async (req, res) => {
+  const { id } = req.params
+  const { productId } = req.body
+
+  const product = await productsContainer.getById(productId)
+
+  if (!product)
+    return res.status(404).json({ error: 404, message: 'Product not found' })
+
+  const cart = await cartContainer.getById(id)
+
+  if (!cart)
+    return res.status(404).json({ error: 404, message: 'Cart not found' })
+
+  cart.products.push(product)
+  cart.updatedAt = Date.now()
+
+  await cartContainer.updateById(id, cart)
+
+  return res.status(201).json(cart)
+})
+
+cartRouter.delete('/:id/products/:idProd', async (req, res) => {
+  const { id, idProd } = req.params
+
+  const cart = await cartContainer.getById(id)
+
+  if (!cart)
+    return res.status(404).json({ error: 404, message: 'Cart not found' })
+
+  cart.products = cart.products.filter((prod) => prod.id !== idProd)
+  cart.updatedAt = Date.now()
+
+  await cartContainer.updateById(id, cart)
 
   return res.status(204).end()
 })
