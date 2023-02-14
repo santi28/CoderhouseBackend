@@ -1,7 +1,7 @@
+/* eslint-disable import/first */
 // Inicializa las configuraciones del entorno
 import dotenv from 'dotenv'
 dotenv.config()
-
 
 import path from 'path'
 import http from 'http'
@@ -10,14 +10,15 @@ import { fileURLToPath } from 'url'
 import express, { Router } from 'express'
 import handlebars from 'express-handlebars'
 import { Server } from 'socket.io'
+import { faker } from '@faker-js/faker/locale/es'
 
-import { createProductsTable, createChatTable } from './scripts/seed.js'
-import { sqlite, mongodb } from './config/index.js'
-import Container from './containers/sql.container.js'
+import { mongodb } from './config/index.js'
+// import Container from './containers/sql.container.js'
 
 // DAO Import
-import { CartsDAO, ProductsDAO } from './daos/index.js'
-
+import { CartsDAO, ProductsDAO, ChatsDAO } from './daos/index.js'
+import { normalize } from 'normalizr'
+import { messageSchema } from './schemas/messages.schema.js'
 
 const app = express()
 const server = http.createServer(app)
@@ -36,8 +37,7 @@ const authMiddleware = (req, res, next) => {
 
 const productsContainer = new ProductsDAO()
 const cartContainer = new CartsDAO()
-
-const chatContainer = new Container(sqlite, 'chat')
+const chatContainer = new ChatsDAO()
 
 const productsRouter = Router()
 const cartRouter = Router()
@@ -56,6 +56,9 @@ app.engine(
 app.set('view engine', 'hbs')
 app.set('views', './src/views')
 
+// Static files
+app.use(express.static('./src/public'))
+
 // Middlewares
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -65,6 +68,25 @@ app.use('/api/products', productsRouter)
 app.use('/api/cart', cartRouter)
 
 // #region Products Router
+productsRouter.get('/test', async (req, res) => {
+  const fakerData = () => ({
+    id: faker.datatype.uuid(),
+    picture: faker.image.imageUrl(),
+    code: faker.random.alphaNumeric(10),
+    name: faker.commerce.productName(),
+    price: faker.commerce.price(),
+    stock: faker.random.numeric(),
+    description: faker.commerce.productDescription()
+  })
+
+  const products = []
+
+  // Agrega 5 productos
+  for (let i = 0; i < 5; i++) products.push(fakerData())
+
+  res.json(products)
+})
+
 productsRouter.get('/:id?', async (req, res) => {
   const { id } = req.params
 
@@ -207,7 +229,9 @@ io.on('connection', async (socket) => {
   socket.emit('productos', productos)
 
   const messages = await chatContainer.getAll()
-  socket.emit('messages', messages)
+  const normalizedMessages = normalize(messages, [messageSchema])
+
+  socket.emit('messages', normalizedMessages)
 
   socket.on('new-product', async (data) => {
     try {
@@ -231,15 +255,10 @@ io.on('connection', async (socket) => {
     }
   })
 
-  socket.on('new-message', async ({ senderMail, message }) => {
-    const messageId = await chatContainer.save({
-      senderMail,
-      message,
-      date: new Date().getTime()
-    })
-
-    const chatMessage = await chatContainer.getById(messageId)
-    io.sockets.emit('update-messages', chatMessage)
+  socket.on('new-message', async (messagePayload) => {
+    const message = await chatContainer.save(messagePayload)
+    // const chatMessage = await chatContainer.getById(messageId)
+    io.sockets.emit('update-messages', message)
   })
 
   socket.on('disconnect', () => console.log('🚀 Client disconnected'))
@@ -248,6 +267,10 @@ io.on('connection', async (socket) => {
 app.get('/', async (req, res) => {
   const products = await productsContainer.getAll()
   res.render('main', { products })
+})
+
+app.get('/products/test', async (req, res) => {
+  res.render('products/test')
 })
 
 server.listen(

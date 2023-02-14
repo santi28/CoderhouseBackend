@@ -1,7 +1,7 @@
 import Container from '../../containers/firebase.container.js'
 
-export class ProductsDAO extends Container {
+export class ChatsDAO extends Container {
   constructor() {
-    super('products')
+    super('chats')
   }
 }

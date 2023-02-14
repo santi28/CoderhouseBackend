@@ -1,12 +1,15 @@
+import { Model } from 'mongoose'
 
 class Contenedor {
   constructor(model) {
     /** @type {Model} */
     this.model = model
   }
+
   async getById(id) {
     try {
-      return await this.model.findById(id)
+      const docs = await this.model.findById(id)
+      return docs.toObject()
     } catch (error) {
       throw new Error(error)
     }
@@ -14,7 +17,8 @@ class Contenedor {
 
   async getAll() {
     try {
-      return await this.model.find()
+      const all = await this.model.find()
+      return all.map((item) => item.toObject())
     } catch (error) {
       throw new Error(error)
     }
@@ -23,7 +27,6 @@ class Contenedor {
   async save(item) {
     try {
       const newItem = new this.model(item)
-      await newItem.save()
 
       return newItem
     } catch (error) {
@@ -37,7 +40,7 @@ class Contenedor {
    */
   async updateById(id, item) {
     try {
-      return await this.model.findByIdAndUpdate(id, item);
+      return await this.model.findByIdAndUpdate(id, item)
     } catch (error) {
       throw new Error(error)
     }

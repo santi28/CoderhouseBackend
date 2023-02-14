@@ -15,6 +15,14 @@
     {{! Tailwind CSS }}
     <script src='https://cdn.tailwindcss.com'></script>
 
+    {{! CryptoJS }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/md5.js"></script>
+
+    {{! Normalizr}}
+    <script src="https://cdn.jsdelivr.net/npm/normalizr@3.6.1/dist/normalizr.browser.min.js"></script>
+
+    {{! Socket.io }}
     <script src='/socket.io/socket.io.js'></script>
 
     <title>Listado de productos</title>
@@ -88,24 +96,35 @@
       </div>
       <div class='flex flex-col gap-2 chat' id='chat'>
         <h2 class='text-xl italic'>Centro de mensajes</h2>
-        <input
-          type='email'
-          placeholder='Ingrese su email'
-          required
-          id='chatEmail'
-          class='text-zinc-900 text-sm rounded-lg outline-none w-full p-2.5 border border-zinc-400 transition-all focus:ring focus:ring-blue-500'
-        />
+        <h3 class="text-lg italic">Información del usuario</h3>
+        <div class="flex gap-3">
+          <img id="chat-image" src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y&s=128" class="w-[42px] h-[42px] rounded-full">
+          <input type='email' id='chat-email' placeholder='Email' class='text-zinc-900 text-sm rounded-lg outline-none w-full p-2.5 border border-zinc-400 transition-all focus:ring focus:ring-blue-500'
+          />
+        </div>
+        <div class="flex gap-3">
+          <input type="text" id="chat-name" placeholder="Nombre" class='text-zinc-900 text-sm rounded-lg outline-none w-full p-2.5 border border-zinc-400 transition-all focus:ring focus:ring-blue-500'>
+          <input type="text" id="chat-surname" placeholder="Apellido" class='text-zinc-900 text-sm rounded-lg outline-none w-full p-2.5 border border-zinc-400 transition-all focus:ring focus:ring-blue-500'>
+        </div>
+        <div class="flex gap-3">
+          <input type="number" id="chat-age" placeholder="Edad" class='w-1/3 text-zinc-900 text-sm rounded-lg outline-none w-full p-2.5 border border-zinc-400 transition-all focus:ring focus:ring-blue-500'>
+          <input type="text" id="chat-username" placeholder="Nombre de usuario" class='text-zinc-900 text-sm rounded-lg outline-none w-full p-2.5 border border-zinc-400 transition-all focus:ring focus:ring-blue-500'>
+        </div>
         <hr />
         <div
           class='flex flex-col gap-2 overflow-auto max-h-64'
-          id='chatWrapper'
-        >
-
-        </div>
+          id='chatWrapper'></div>
+        <form id="chat-form" class="flex w-full gap-4">
+          <input id="chat-message" type="text" placeholder="Ingrese su mensaje" class="text-zinc-900 text-sm rounded-lg outline-none w-full p-2.5 border border-zinc-400 transition-all focus:ring focus:ring-blue-500"> 
+          <button type="submit" class="text-zinc-100 text-sm rounded-lg outline-none w-28 p-2.5 bg-indigo-800">Enviar</button>
+        </form>
       </div>
     </main>
+    <script src="/chat.js"></script>
     <script>
       let mailId = '';
+
+      const socket = io()
 
       const Product = (title, price, thumbnail) => {
         const article = document.createElement('article')
@@ -114,50 +133,10 @@
         return article
       }
 
-      const ChatForm = () => {
-        const form = document.createElement('form')
-        form.classList.add('flex', 'w-full', 'gap-4')
-        form.setAttribute('id', 'chatForm')
-        form.innerHTML =
-          `<input type="text" placeholder="Ingrese su mensaje" required class="text-zinc-900 text-sm rounded-lg outline-none w-full p-2.5 border border-zinc-400 transition-all focus:ring focus:ring-blue-500"> <button type="submit" class="text-zinc-100 text-sm rounded-lg outline-none w-28 p-2.5 bg-indigo-800"> Enviar</button>`
-        return form
-      }
-            
-      const ChatMessage = (sender, message, timestamp) => {
-        const chatMessage = document.createElement('div')
-        chatMessage.classList.add('flex', 'flex-col', 'w-full', 'p-2',
-          'rounded-xl')
-        if (sender === mailId) {
-          chatMessage.classList.add('self-end', 'bg-green-200',
-            'rounded-br-none')
-        } else {
-          chatMessage.classList.add('bg-zinc-200', 'rounded-bl-none')
-        }
-        chatMessage.innerHTML =
-          `<p class="w-full">${message}</p> <span class="text-zinc-600">${sender} • <i>${timestamp}</i></span>`
-        return chatMessage
-      }
-            
-      const formatHour = (date) => {
-        const today = new Date()
-        const messageDate = new Date(date)
-        if (today.getDate() === messageDate.getDate()) {
-          return `${messageDate.getHours()}:${messageDate.getMinutes()}`
-        } else {
-          return `${messageDate.getDate()}/${messageDate.getMonth()}/${messageDate.getFullYear()} ${messageDate.getHours()}:${messageDate.getMinutes()}`
-        }
-      }
-
-      const socket = io();
 
       socket.on('productos', (data) => {
         const productContainer = document.getElementById('productContainer')
         data.map(({ name, price, picture }) => productContainer.appendChild(Product(name, price, picture)))
-      }) 
-
-      socket.on('messages', (data) => {
-        const chatContainer = document.getElementById('chatWrapper') 
-        data.map(({ senderMail, message, date }) => chatContainer.appendChild(ChatMessage(senderMail, message, formatHour(date))))
       })
 
       const productForm = document.getElementById('productForm')
@@ -176,39 +155,6 @@
 
         productContainer.appendChild(Product(data.name, data.price,data.picture))
       })
-
-      socket.on('update-messages', (data) => {
-        data = data[0]
-        const chatContainer = document.getElementById('chatWrapper')
-        chatContainer.appendChild(ChatMessage(data.senderMail, data.message, formatHour(data.date)))
-      });
-
-      const chatEmail = document.getElementById('chatEmail')
-      const chat = document.getElementById('chat')
-      
-      chatEmail.addEventListener('change', (e) => {
-        const { value } = e.target; 
-        
-        // En caso de que value sea un email valido, se muestra el form de chat
-        const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g
-
-        if (emailRegex.test(value)) {
-          mailId = value
-          const chatForm = ChatForm() 
-          chat.appendChild(chatForm)
-
-          chatForm.addEventListener('submit', (e) => {
-            e.preventDefault() 
-            const message = chatForm.querySelector('input').value 
-            socket.emit('new-message', { senderMail: mailId, message })
-          })
-        } else {
-          const chatForm = document.getElementById('chatForm') 
-          chatForm && chatForm.remove() 
-          mailId = ''
-        }
-      })
-
     </script>
   </body>
 </html>
