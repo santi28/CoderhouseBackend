@@ -52,7 +52,7 @@ app.use(
         }
       },
       dbName: process.env.MONGO_DB,
-      ttl: 60 // 1 minuto
+      ttl: 60 * 1 // 10 minutes
     }),
     secret: process.env.SESSION_SECRET,
     resave: false,

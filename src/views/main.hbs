@@ -16,11 +16,17 @@
     <script src='https://cdn.tailwindcss.com'></script>
 
     {{! CryptoJS }}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/core.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/md5.js"></script>
+    <script
+      src='https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/core.min.js'
+    ></script>
+    <script
+      src='https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/md5.js'
+    ></script>
 
     {{! Normalizr}}
-    <script src="https://cdn.jsdelivr.net/npm/normalizr@3.6.1/dist/normalizr.browser.min.js"></script>
+    <script
+      src='https://cdn.jsdelivr.net/npm/normalizr@3.6.1/dist/normalizr.browser.min.js'
+    ></script>
 
     {{! Socket.io }}
     <script src='/socket.io/socket.io.js'></script>
@@ -37,8 +43,30 @@
     </style>
   </head>
   <body>
-    <header class='w-full p-4 text-lg text-center text-white bg-zinc-900'>
+    <header
+      class='w-full flex justify-between p-4 text-lg text-white bg-zinc-900'
+    >
       Listador de productos
+      <div class='flex items-center'>
+        <span>{{session.name}}</span>
+        <a href='/logout' class='ml-4 bg-blue-500 p-2 text-sm rounded-lg'>
+          <svg
+            xmlns='http://www.w3.org/2000/svg'
+            fill='none'
+            viewBox='0 0 24 24'
+            stroke-width='2'
+            stroke='currentColor'
+            class='w-6 h-6'
+          >
+            <path
+              stroke-linecap='round'
+              stroke-linejoin='round'
+              d='M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9'
+            ></path>
+          </svg>
+
+        </a>
+      </div>
     </header>
 
     <main class='mx-5 my-6 md:mx-12'>
@@ -96,64 +124,87 @@
       </div>
       <div class='flex flex-col gap-2 chat' id='chat'>
         <h2 class='text-xl italic'>Centro de mensajes</h2>
-        <h3 class="text-lg italic">Información del usuario</h3>
-        <div class="flex gap-3">
-          <img id="chat-image" src="https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y&s=128" class="w-[42px] h-[42px] rounded-full">
-          <input type='email' id='chat-email' placeholder='Email' class='text-zinc-900 text-sm rounded-lg outline-none w-full p-2.5 border border-zinc-400 transition-all focus:ring focus:ring-blue-500'
+        <h3 class='text-lg italic'>Información del usuario</h3>
+        <div class='flex gap-3'>
+          <img
+            id='chat-image'
+            src='https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y&s=128'
+            class='w-[42px] h-[42px] rounded-full'
+          />
+          <input
+            type='email'
+            id='chat-email'
+            placeholder='Email'
+            class='text-zinc-900 text-sm rounded-lg outline-none w-full p-2.5 border border-zinc-400 transition-all focus:ring focus:ring-blue-500'
           />
         </div>
-        <div class="flex gap-3">
-          <input type="text" id="chat-name" placeholder="Nombre" class='text-zinc-900 text-sm rounded-lg outline-none w-full p-2.5 border border-zinc-400 transition-all focus:ring focus:ring-blue-500'>
-          <input type="text" id="chat-surname" placeholder="Apellido" class='text-zinc-900 text-sm rounded-lg outline-none w-full p-2.5 border border-zinc-400 transition-all focus:ring focus:ring-blue-500'>
+        <div class='flex gap-3'>
+          <input
+            type='text'
+            id='chat-name'
+            placeholder='Nombre'
+            class='text-zinc-900 text-sm rounded-lg outline-none w-full p-2.5 border border-zinc-400 transition-all focus:ring focus:ring-blue-500'
+          />
+          <input
+            type='text'
+            id='chat-surname'
+            placeholder='Apellido'
+            class='text-zinc-900 text-sm rounded-lg outline-none w-full p-2.5 border border-zinc-400 transition-all focus:ring focus:ring-blue-500'
+          />
         </div>
-        <div class="flex gap-3">
-          <input type="number" id="chat-age" placeholder="Edad" class='w-1/3 text-zinc-900 text-sm rounded-lg outline-none w-full p-2.5 border border-zinc-400 transition-all focus:ring focus:ring-blue-500'>
-          <input type="text" id="chat-username" placeholder="Nombre de usuario" class='text-zinc-900 text-sm rounded-lg outline-none w-full p-2.5 border border-zinc-400 transition-all focus:ring focus:ring-blue-500'>
+        <div class='flex gap-3'>
+          <input
+            type='number'
+            id='chat-age'
+            placeholder='Edad'
+            class='w-1/3 text-zinc-900 text-sm rounded-lg outline-none w-full p-2.5 border border-zinc-400 transition-all focus:ring focus:ring-blue-500'
+          />
+          <input
+            type='text'
+            id='chat-username'
+            placeholder='Nombre de usuario'
+            class='text-zinc-900 text-sm rounded-lg outline-none w-full p-2.5 border border-zinc-400 transition-all focus:ring focus:ring-blue-500'
+          />
         </div>
         <hr />
         <div
           class='flex flex-col gap-2 overflow-auto max-h-64'
-          id='chatWrapper'></div>
-        <form id="chat-form" class="flex w-full gap-4">
-          <input id="chat-message" type="text" placeholder="Ingrese su mensaje" class="text-zinc-900 text-sm rounded-lg outline-none w-full p-2.5 border border-zinc-400 transition-all focus:ring focus:ring-blue-500"> 
-          <button type="submit" class="text-zinc-100 text-sm rounded-lg outline-none w-28 p-2.5 bg-indigo-800">Enviar</button>
+          id='chatWrapper'
+        ></div>
+        <form id='chat-form' class='flex w-full gap-4'>
+          <input
+            id='chat-message'
+            type='text'
+            placeholder='Ingrese su mensaje'
+            class='text-zinc-900 text-sm rounded-lg outline-none w-full p-2.5 border border-zinc-400 transition-all focus:ring focus:ring-blue-500'
+          />
+          <button
+            type='submit'
+            class='text-zinc-100 text-sm rounded-lg outline-none w-28 p-2.5 bg-indigo-800'
+          >Enviar</button>
         </form>
       </div>
     </main>
-    <script src="/chat.js"></script>
+    <script src='/chat.js'></script>
     <script>
-      let mailId = '';
-
-      const socket = io()
-
-      const Product = (title, price, thumbnail) => {
-        const article = document.createElement('article')
-        article.innerHTML =
-          `<img class="object-cover w-full mb-2 rounded-lg aspect-video" src="${thumbnail}" alt="${title}"> <h3 class="text-lg">${title}</h3> <span class="italic text-zinc-500">$${price}</span>`
-        return article
-      }
-
-
-      socket.on('productos', (data) => {
-        const productContainer = document.getElementById('productContainer')
-        data.map(({ name, price, picture }) => productContainer.appendChild(Product(name, price, picture)))
-      })
-
-      const productForm = document.getElementById('productForm')
-
-      productForm.addEventListener('submit', (e) => {
-        e.preventDefault() 
-        const name = document.getElementById('title').value
-        const price = document.getElementById('price').value
-        const picture = document.getElementById('thumbnail').value 
-        socket.emit('new-product', { name, price, picture })
-      }) 
-
-      socket.on('update-products', (data) => {
-        data = data[0]
-        const productContainer = document.getElementById('productContainer')
-
-        productContainer.appendChild(Product(data.name, data.price,data.picture))
+      let mailId = ''; const socket = io() const Product = (title, price,
+      thumbnail) => { const article = document.createElement('article')
+      article.innerHTML = `<img class="object-cover w-full mb-2 rounded-lg
+      aspect-video" src="${thumbnail}" alt="${title}"> <h3
+      class="text-lg">${title}</h3> <span class="italic
+      text-zinc-500">$${price}</span>` return article } socket.on('productos',
+      (data) => { const productContainer =
+      document.getElementById('productContainer') data.map(({ name, price,
+      picture }) => productContainer.appendChild(Product(name, price, picture)))
+      }) const productForm = document.getElementById('productForm')
+      productForm.addEventListener('submit', (e) => { e.preventDefault() const
+      name = document.getElementById('title').value const price =
+      document.getElementById('price').value const picture =
+      document.getElementById('thumbnail').value socket.emit('new-product', {
+      name, price, picture }) }) socket.on('update-products', (data) => { data =
+      data[0] const productContainer =
+      document.getElementById('productContainer')
+      productContainer.appendChild(Product(data.name, data.price,data.picture))
       })
     </script>
   </body>
