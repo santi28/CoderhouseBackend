@@ -9,16 +9,21 @@ import { fileURLToPath } from 'url'
 
 import express, { Router } from 'express'
 import handlebars from 'express-handlebars'
+import session from 'express-session'
+import MongoStore from 'connect-mongo'
 import { Server } from 'socket.io'
 import { faker } from '@faker-js/faker/locale/es'
 
 import { mongodb } from './config/index.js'
-// import Container from './containers/sql.container.js'
 
 // DAO Import
 import { CartsDAO, ProductsDAO, ChatsDAO } from './daos/index.js'
 import { normalize } from 'normalizr'
 import { messageSchema } from './schemas/messages.schema.js'
+
+// Router Import
+import appRouter from './router/app.router.js'
+import sessionRouter from './router/session.router.js'
 
 const app = express()
 const server = http.createServer(app)
@@ -34,6 +39,26 @@ const authMiddleware = (req, res, next) => {
   if (administrator) return next()
   return res.status(401).json({ error: 401, message: 'Unauthorized' })
 }
+
+app.use(
+  session({
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGO_URL,
+      mongoOptions: {
+        authSource: 'admin',
+        auth: {
+          username: process.env.MONGO_USER,
+          password: process.env.MONGO_PASS
+        }
+      },
+      dbName: process.env.MONGO_DB,
+      ttl: 60 // 1 minuto
+    }),
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false
+  })
+)
 
 const productsContainer = new ProductsDAO()
 const cartContainer = new CartsDAO()
@@ -64,8 +89,10 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 // Routes
+app.use('/', appRouter)
 app.use('/api/products', productsRouter)
 app.use('/api/cart', cartRouter)
+app.use('/api/accounts', sessionRouter)
 
 // #region Products Router
 productsRouter.get('/test', async (req, res) => {
@@ -262,15 +289,6 @@ io.on('connection', async (socket) => {
   })
 
   socket.on('disconnect', () => console.log('🚀 Client disconnected'))
-})
-
-app.get('/', async (req, res) => {
-  const products = await productsContainer.getAll()
-  res.render('main', { products })
-})
-
-app.get('/products/test', async (req, res) => {
-  res.render('products/test')
 })
 
 server.listen(
