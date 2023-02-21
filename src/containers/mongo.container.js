@@ -27,7 +27,6 @@ class Contenedor {
   async save(item) {
     try {
       const newItem = new this.model(item)
-
       return newItem
     } catch (error) {
       throw new Error(error)
