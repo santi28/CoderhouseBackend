@@ -13,6 +13,7 @@ import { fileURLToPath } from 'url'
 import express from 'express'
 import handlebars from 'express-handlebars'
 import session from 'express-session'
+
 import MongoStore from 'connect-mongo'
 import { Server } from 'socket.io'
 
@@ -30,6 +31,9 @@ import appRouter from './router/app.router.js'
 import productsRouter from './router/products.router.js'
 import sessionRouter from './router/session.router.js'
 import cartsRouter from './router/cart.router.js'
+import initPassport from './config/passport.config.js'
+import passport from 'passport'
+import morgan from 'morgan'
 
 // Instancia el servidor de express, http y socket.io
 const app = express()
@@ -42,6 +46,8 @@ mongodb()
 const PORT = process.env.PORT || 3000
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
+
+app.use(morgan('dev'))
 
 // Configura las sesiones
 app.use(
@@ -63,6 +69,10 @@ app.use(
     saveUninitialized: false
   })
 )
+
+initPassport()
+app.use(passport.initialize())
+app.use(passport.session())
 
 // Instancia los DAOs correspondientes
 const chatContainer = new ChatsDAO()

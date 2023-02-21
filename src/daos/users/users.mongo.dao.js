@@ -15,6 +15,7 @@ export class UsersDAO extends Container {
     return await newUser.save()
   }
 
+  /** @deprecated */
   async login(email, password) {
     return await Users.findOne({ email, password })
   }

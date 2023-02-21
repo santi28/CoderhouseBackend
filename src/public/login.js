@@ -14,8 +14,6 @@ loginForm.addEventListener('submit', async (e) => {
     password
   })
 
-  console.log(loginPayload)
-
   const data = await fetch('/api/accounts/login', {
     method: 'POST',
     headers: {
@@ -25,7 +23,9 @@ loginForm.addEventListener('submit', async (e) => {
     credentials: 'include'
   })
 
+  console.log(data)
+
   if (!data.ok) return alert('Se produjo un error al iniciar sesión')
 
-  window.location.href = '/'
+  // window.location.href = '/'
 })

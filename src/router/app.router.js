@@ -5,6 +5,7 @@ const router = Router()
 const productsContainer = new ProductsDAO()
 
 const authMiddleware = (req, res, next) => {
+  console.log('Auth middleware')
   console.log(req.session.user)
 
   if (!req.session.user) res.redirect('/login')
