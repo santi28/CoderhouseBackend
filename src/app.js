@@ -43,6 +43,7 @@ const PORT = process.env.PORT || 3000
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
+// Configura las sesiones
 app.use(
   session({
     store: MongoStore.create({
@@ -63,10 +64,11 @@ app.use(
   })
 )
 
+// Instancia los DAOs correspondientes
 const chatContainer = new ChatsDAO()
 const productsContainer = new ProductsDAO()
 
-// Configuración de handlebars
+// Configura el motor de plantillas handlebars
 app.engine(
   'hbs',
   handlebars.engine({
@@ -80,7 +82,7 @@ app.engine(
 app.set('view engine', 'hbs')
 app.set('views', './src/views')
 
-// Static files
+// Configuración del servidor de archivos estáticos
 app.use(express.static('./src/public'))
 
 // Middlewares
@@ -113,15 +115,18 @@ io.on('connection', async (socket) => {
         .join('')
         .toUpperCase()}${Math.floor(Math.random() * 10000)}`
 
-      const productId = await productsContainer.save({
+      const productPayload = {
+        name: data.name,
+        price: data.price,
+        picture: data.picture,
         description: data.name,
         code: productCode,
-        stock: 10,
-        ...data
-      })
-      const product = await productsContainer.getById(productId)
+        stock: 10
+      }
 
-      io.sockets.emit('update-products', product)
+      const savedProduct = await productsContainer.save(productPayload)
+
+      io.sockets.emit('update-products', savedProduct)
     } catch (error) {
       console.error(error)
     }
