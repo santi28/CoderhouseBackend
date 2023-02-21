@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { ProductsDAO } from '../daos/index.js'
+import { ProductsDAO } from '../daos/products/products.mongo.dao.js'
 
 const router = Router()
 const productsContainer = new ProductsDAO()
