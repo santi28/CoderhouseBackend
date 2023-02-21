@@ -1,12 +1,15 @@
 /* eslint-disable import/first */
+
 // Inicializa las configuraciones del entorno
 import dotenv from 'dotenv'
 dotenv.config()
 
+// Importa las dependencias
 import path from 'path'
 import http from 'http'
 import { fileURLToPath } from 'url'
 
+// Importa los módulos de express
 import express from 'express'
 import handlebars from 'express-handlebars'
 import session from 'express-session'
@@ -28,10 +31,13 @@ import productsRouter from './router/products.router.js'
 import sessionRouter from './router/session.router.js'
 import cartsRouter from './router/cart.router.js'
 
+// Instancia el servidor de express, http y socket.io
 const app = express()
 const server = http.createServer(app)
 const io = new Server(server)
-mongodb() // Inicializa la conexión a MongoDB
+
+// Inicializa la conexión a MongoDB
+mongodb()
 
 const PORT = process.env.PORT || 3000
 const __filename = fileURLToPath(import.meta.url)
