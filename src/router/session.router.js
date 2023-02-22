@@ -21,6 +21,8 @@ router.post(
       email: user.email
     }
 
+    console.log('Setting up session for user with', req.session.user)
+
     return res.sendStatus(204)
   }
 )

@@ -10,6 +10,7 @@ import { initHandlebars } from './config/templateEnginge.config.js'
 import { initSessions } from './config/sessions.config.js'
 
 import Router from './router/index.router.js'
+import initPassport from './config/passport.config.js'
 
 const app = express() // Inicializa el servidor express
 const server = http.createServer(app) // Inicializa el servidor http
@@ -23,6 +24,7 @@ initMongoDB() // Inicializa la conexion a la base de datos
 initWebscoketServer(server) // Inicializa el servidor de websockets
 initHandlebars(app) // Inicializa el motor de plantillas
 initSessions(app) // Inicializa las sesiones
+initPassport(app) // Inicializa el sistema de autenticacion por passport
 
 app.use(express.json()) // Configura el body parser para json
 app.use(express.urlencoded({ extended: true })) // Configura el body parser para formularios

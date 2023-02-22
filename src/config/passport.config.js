@@ -1,54 +1,47 @@
 import passport from 'passport'
-import { Strategy as LocalStrategy } from 'passport-local'
-import { UsersDAO } from '../daos/users/users.mongo.dao.js'
+import passportLocal from 'passport-local'
 
+import { UsersDAO } from '../daos/users/users.mongo.dao.js'
 import BCryptHelper from '../utils/bcrypt.helper.js'
 
+// import BCryptHelper from '../utils/bcrypt.helper.js'
+
 const userContainer = new UsersDAO()
+const LocalStrategy = passportLocal.Strategy
 
-const initPassport = () => {
-  passport.use(
-    'signup',
-    new LocalStrategy(async (username, password, done) => {
-      const gettedUser = await userContainer.getByEmail(username)
-
-      if (gettedUser)
-        return done(null, false, { message: 'User already exists' })
-
-      const hashedPassword = BCryptHelper.hashPassword(password)
-      const newUser = await userContainer.register({
-        email: username,
-        password: hashedPassword
-      })
-
-      return done(null, newUser)
+const loginStrategy = new LocalStrategy(
+  { usernameField: 'email' },
+  async (username, password, done) => {
+    console.log(`Initializing login using passport local`, {
+      username,
+      password
     })
-  )
 
-  passport.use(
-    'login',
-    new LocalStrategy(async (username, password, done) => {
-      console.log(
-        `Initializing login with username: ${username} and password: ${password}`
-      )
+    const user = await userContainer.getByEmail(username)
 
-      const gettedUser = await userContainer.getByEmail(username)
+    const isPasswordValid = BCryptHelper.isValidPassword(
+      password,
+      user?.password
+    )
 
-      if (!gettedUser) return done(null, false, { message: 'User not found' })
+    if (!user & !isPasswordValid)
+      return done(null, false, { message: 'Invalid credentials' })
 
-      if (!BCryptHelper.isValidPassword(password, gettedUser.password))
-        return done(null, gettedUser)
+    return done(null, user)
+  }
+)
 
-      return done(null, gettedUser)
-    })
-  )
+const initPassport = (app) => {
+  app.use(passport.initialize())
+  app.use(passport.session())
+
+  passport.use(loginStrategy)
 
   passport.serializeUser((user, done) => {
-    done(null, user.email)
+    done(null, user)
   })
 
-  passport.deserializeUser(async (email, done) => {
-    const user = await userContainer.getByEmail(email)
+  passport.deserializeUser(async (user, done) => {
     done(null, user)
   })
 }

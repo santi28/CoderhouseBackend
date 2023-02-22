@@ -27,5 +27,5 @@ loginForm.addEventListener('submit', async (e) => {
 
   if (!data.ok) return alert('Se produjo un error al iniciar sesión')
 
-  // window.location.href = '/'
+  window.location.href = '/'
 })
