@@ -6,6 +6,10 @@ export class UsersDAO extends Container {
     super(Users)
   }
 
+  async getById(id) {
+    return await Users.findById(id)
+  }
+
   async getByEmail(email) {
     return await Users.findOne({ email })
   }

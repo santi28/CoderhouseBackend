@@ -9,10 +9,7 @@ const usersContainer = new UsersDAO()
 
 router.post(
   '/login',
-  passport.authenticate('login', {
-    failureRedirect: '/login',
-    failureMessage: true
-  }),
+  passport.authenticate('local', { failureRedirect: '/login' }),
   async (req, res) => {
     console.log('Login successful with passport authentication')
 
