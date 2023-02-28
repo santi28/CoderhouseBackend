@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import { ProductsDAO } from '../daos/products/products.mongo.dao.js'
+import config from '../config/app.config.js'
 
 const router = Router()
 const productsContainer = new ProductsDAO()
@@ -35,6 +36,22 @@ router.get('/logout', async (req, res) => {
 
 router.get('/products/test', async (req, res) => {
   res.render('products/test')
+})
+
+router.get('/info', async (req, res) => {
+  const serverInfo = {
+    title: process.title,
+    args: config.args,
+    execPath: process.execPath,
+    platform: process.platform,
+    pid: process.pid,
+    nodeVersion: process.version,
+    projectPath: process.cwd(),
+    reservedMemory: process.memoryUsage().rss,
+    uptime: process.uptime()
+  }
+
+  res.json(serverInfo)
 })
 
 export default router

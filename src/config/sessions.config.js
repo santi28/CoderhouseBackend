@@ -1,22 +1,23 @@
 import session from 'express-session'
 import MongoStore from 'connect-mongo'
+import config from './app.config.js'
 
 export const initSessions = (app) => {
   app.use(
     session({
       store: MongoStore.create({
-        mongoUrl: process.env.MONGO_URL,
+        mongoUrl: config.db.uri,
         mongoOptions: {
           authSource: 'admin',
           auth: {
-            username: process.env.MONGO_USER,
-            password: process.env.MONGO_PASS
+            username: config.db.user,
+            password: config.db.password
           }
         },
-        dbName: process.env.MONGO_DB,
+        dbName: config.db.name,
         ttl: 60 * 1 // 10 minutes
       }),
-      secret: process.env.SESSION_SECRET,
+      secret: config.session.secret,
       resave: false,
       saveUninitialized: false
     })
