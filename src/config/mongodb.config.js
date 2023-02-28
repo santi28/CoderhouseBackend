@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 
-export const mongodb = () => {
+export const initMongoDB = () => {
   mongoose.set('strictQuery', false)
   mongoose
     .connect(process.env.MONGO_URL, {
@@ -14,3 +14,5 @@ export const mongodb = () => {
       console.error('🔴 Error when attempting to connect', error)
     )
 }
+
+export default initMongoDB

@@ -1,10 +1,11 @@
 import { Router } from 'express'
-import { ProductsDAO } from '../daos/index.js'
+import { ProductsDAO } from '../daos/products/products.mongo.dao.js'
 
 const router = Router()
 const productsContainer = new ProductsDAO()
 
 const authMiddleware = (req, res, next) => {
+  console.log('Auth middleware')
   console.log(req.session.user)
 
   if (!req.session.user) res.redirect('/login')

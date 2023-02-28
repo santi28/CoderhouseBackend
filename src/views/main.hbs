@@ -72,7 +72,7 @@
     <main class='mx-5 my-6 md:mx-12'>
       <form
         method='post'
-        id='productForm'
+        id='product-form'
         class='flex flex-col w-full gap-2 form'
       >
         <h2 class='text-xl italic'>Cargar producto</h2>
@@ -110,17 +110,8 @@
           Agregar producto</button>
       </form>
       <div class='products'>
-        {{#if products}}
-          <div
-            class='grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 h-fit'
-            id='productContainer'
-          >
-            <h2 class='text-xl italic col-span-full'>Listado de productos</h2>
-          </div>
-        {{else}}
-          <h2 class='w-full text-xl text-center'>No hay productos disponibles
-            para mostrar</h2>
-        {{/if}}
+        <h2 class='text-xl italic'>Listado de productos</h2>
+        <div class='flex flex-col gap-2' id='product-list'></div>
       </div>
       <div class='flex flex-col gap-2 chat' id='chat'>
         <h2 class='text-xl italic'>Centro de mensajes</h2>
@@ -185,27 +176,7 @@
         </form>
       </div>
     </main>
+    <script src='/products.js'></script>
     <script src='/chat.js'></script>
-    <script>
-      let mailId = ''; const socket = io() const Product = (title, price,
-      thumbnail) => { const article = document.createElement('article')
-      article.innerHTML = `<img class="object-cover w-full mb-2 rounded-lg
-      aspect-video" src="${thumbnail}" alt="${title}"> <h3
-      class="text-lg">${title}</h3> <span class="italic
-      text-zinc-500">$${price}</span>` return article } socket.on('productos',
-      (data) => { const productContainer =
-      document.getElementById('productContainer') data.map(({ name, price,
-      picture }) => productContainer.appendChild(Product(name, price, picture)))
-      }) const productForm = document.getElementById('productForm')
-      productForm.addEventListener('submit', (e) => { e.preventDefault() const
-      name = document.getElementById('title').value const price =
-      document.getElementById('price').value const picture =
-      document.getElementById('thumbnail').value socket.emit('new-product', {
-      name, price, picture }) }) socket.on('update-products', (data) => { data =
-      data[0] const productContainer =
-      document.getElementById('productContainer')
-      productContainer.appendChild(Product(data.name, data.price,data.picture))
-      })
-    </script>
   </body>
 </html>

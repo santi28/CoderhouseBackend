@@ -6,6 +6,10 @@ export class UsersDAO extends Container {
     super(Users)
   }
 
+  async getById(id) {
+    return await Users.findById(id)
+  }
+
   async getByEmail(email) {
     return await Users.findOne({ email })
   }
@@ -15,6 +19,7 @@ export class UsersDAO extends Container {
     return await newUser.save()
   }
 
+  /** @deprecated */
   async login(email, password) {
     return await Users.findOne({ email, password })
   }
