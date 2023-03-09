@@ -3,6 +3,9 @@ import express from 'express'
 import dotenv from 'dotenv'
 import morgan from 'morgan'
 
+// Import app config
+import config from './config/app.config.js'
+
 // Import of initializers
 import { initMongoDB } from './config/mongodb.config.js'
 import { initWebscoketServer } from './websocket/app.js'
@@ -14,7 +17,7 @@ import initPassport from './config/passport.config.js'
 
 const app = express() // Inicializa el servidor express
 const server = http.createServer(app) // Inicializa el servidor http
-const PORT = process.env.PORT || 3000 // Configura el puerto, si no existe usa el 3000
+const PORT = config.app.port // Configura el puerto, si no existe usa el 3000
 
 dotenv.config() // Inicializa las variables de entorno
 app.use(morgan('dev')) // Inicializa el logger utilizando morgan

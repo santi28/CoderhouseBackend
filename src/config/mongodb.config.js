@@ -1,13 +1,14 @@
 import mongoose from 'mongoose'
+import config from './app.config.js'
 
 export const initMongoDB = () => {
   mongoose.set('strictQuery', false)
   mongoose
-    .connect(process.env.MONGO_URL, {
-      dbName: process.env.MONGO_DB,
+    .connect(config.db.uri, {
+      dbName: config.db.name,
       authSource: 'admin',
-      user: process.env.MONGO_USER,
-      pass: process.env.MONGO_PASS
+      user: config.db.user,
+      pass: config.db.password
     })
     .then(() => console.log('🟢 Connected to MongoDB'))
     .catch((error) =>
