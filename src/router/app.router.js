@@ -48,7 +48,8 @@ router.get('/info', async (req, res) => {
     nodeVersion: process.version,
     projectPath: process.cwd(),
     reservedMemory: process.memoryUsage().rss,
-    uptime: process.uptime()
+    uptime: process.uptime(),
+    cpus: process.cpus().length
   }
 
   res.json(serverInfo)
