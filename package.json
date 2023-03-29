@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "start": "node ./src/app.js",
     "start:dev": "nodemon ./src/app.js -p 3008"
@@ -12,7 +11,9 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "nodemon": "2.0.20"
+    "nodemon": "2.0.20",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.2"
   },
   "dependencies": {
     "@faker-js/faker": "7.6.0",
