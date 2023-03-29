@@ -1,12 +1,12 @@
 import { Model } from 'mongoose'
 
 class Contenedor {
-  constructor(model) {
+  constructor (model) {
     /** @type {Model} */
     this.model = model
   }
 
-  async getById(id) {
+  async getById (id) {
     try {
       const docs = await this.model.findById(id)
       return docs.toObject()
@@ -15,7 +15,7 @@ class Contenedor {
     }
   }
 
-  async getAll() {
+  async getAll () {
     try {
       const all = await this.model.find()
       return all.map((item) => item.toObject())
@@ -24,7 +24,7 @@ class Contenedor {
     }
   }
 
-  async save(item) {
+  async save (item) {
     try {
       const newItem = new this.model(item)
       return newItem
@@ -37,7 +37,7 @@ class Contenedor {
    * @param {CustomObject} produ
    * @returns {Promise<number>}
    */
-  async updateById(id, item) {
+  async updateById (id, item) {
     try {
       return await this.model.findByIdAndUpdate(id, item)
     } catch (error) {
@@ -48,7 +48,7 @@ class Contenedor {
   /** Borra un elemento en base a su id
    * @param {number} id
    */
-  async deleteById(id) {
+  async deleteById (id) {
     try {
       return await this.model.findByIdAndDelete(id)
     } catch (error) {
@@ -57,7 +57,7 @@ class Contenedor {
   }
 
   /** Borra todos los elementos */
-  async deleteAll() {
+  async deleteAll () {
     try {
       return await this.model.deleteMany()
     } catch (error) {

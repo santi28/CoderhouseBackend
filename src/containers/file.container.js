@@ -4,7 +4,7 @@ import fs from 'fs'
 class Contenedor {
   filename = 'data.json'
 
-  constructor(filename) {
+  constructor (filename) {
     this.filename = filename ?? 'data.json'
 
     // Verificamos que el archivo exista
@@ -16,7 +16,7 @@ class Contenedor {
     }
   }
 
-  async save(object) {
+  async save (object) {
     const objects = await this.getAll()
 
     const id = (objects[objects.length - 1]?.id ?? 0) + 1
@@ -32,12 +32,12 @@ class Contenedor {
     }
   }
 
-  async getById(id) {
+  async getById (id) {
     const objects = await this.getAll()
     return objects.find((object) => object.id === id)
   }
 
-  async getAll() {
+  async getAll () {
     try {
       const objects = await fs.promises.readFile(this.filename)
       return JSON.parse(objects)
@@ -46,7 +46,7 @@ class Contenedor {
     }
   }
 
-  async updateById(id, gettedProduct) {
+  async updateById (id, gettedProduct) {
     try {
       // Verificamos que el producto exista
       const product = await this.getById(id)
@@ -77,7 +77,7 @@ class Contenedor {
     }
   }
 
-  async deleteById(id) {
+  async deleteById (id) {
     const objects = await this.getAll()
     const newObjectsArray = objects.filter((object) => object.id !== id)
 
@@ -91,7 +91,7 @@ class Contenedor {
     }
   }
 
-  async deleteAll() {
+  async deleteAll () {
     try {
       await fs.promises.writeFile(this.filename, '[]')
     } catch (error) {

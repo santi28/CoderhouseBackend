@@ -1,10 +1,10 @@
 // TODO: Migrar funcionalidad a typescript
 class Contenedor {
-  constructor() {
+  constructor () {
     this.objects = []
   }
 
-  async save(object) {
+  async save (object) {
     const objects = await this.getAll()
 
     const id = (objects[objects.length - 1]?.id ?? 0) + 1
@@ -13,16 +13,16 @@ class Contenedor {
     this.objects = [...objects, objectToSave]
   }
 
-  async getById(id) {
+  async getById (id) {
     const objects = await this.getAll()
     return objects.find((object) => object.id === id)
   }
 
-  async getAll() {
+  async getAll () {
     return this.objects
   }
 
-  async updateById(id, gettedProduct) {
+  async updateById (id, gettedProduct) {
     try {
       const product = await this.getById(id)
       if (!product) throw new Error('Producto no encontrado')
@@ -44,12 +44,12 @@ class Contenedor {
     }
   }
 
-  async deleteById(id) {
+  async deleteById (id) {
     const objects = await this.getAll()
     this.objects = objects.filter((object) => object.id !== id)
   }
 
-  async deleteAll() {
+  async deleteAll () {
     this.objects = []
   }
 }

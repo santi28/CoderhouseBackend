@@ -1,7 +1,7 @@
 import Container from '../../containers/file.container.js'
 
 export class CartsDAO extends Container {
-  constructor() {
+  constructor () {
     super('src/db/carts.json')
   }
 }

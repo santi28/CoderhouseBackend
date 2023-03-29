@@ -12,7 +12,7 @@ const LocalStrategy = passportLocal.Strategy
 const loginStrategy = new LocalStrategy(
   { usernameField: 'email' },
   async (username, password, done) => {
-    console.log(`Initializing login using passport local`, {
+    console.log('Initializing login using passport local', {
       username,
       password
     })
@@ -24,8 +24,7 @@ const loginStrategy = new LocalStrategy(
       user?.password
     )
 
-    if (!user & !isPasswordValid)
-      return done(null, false, { message: 'Invalid credentials' })
+    if (!user & !isPasswordValid) { return done(null, false, { message: 'Invalid credentials' }) }
 
     return done(null, user)
   }

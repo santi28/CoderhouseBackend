@@ -132,8 +132,8 @@ const messageSchema = new normalizr.schema.Entity(
         chatMessage.value
       )
     )
-      // eslint-disable-next-line no-undef
-      return alert('Todos los campos son obligatorios')
+    // eslint-disable-next-line no-undef
+    { return alert('Todos los campos son obligatorios') }
 
     const chatPayload = {
       author: {

@@ -31,8 +31,7 @@ router.get('/:id?', async (req, res) => {
 
   if (id) {
     const product = await productsContainer.getById(id)
-    if (!product)
-      return res.status(404).json({ error: 404, message: 'Product not found' })
+    if (!product) { return res.status(404).json({ error: 404, message: 'Product not found' }) }
 
     return res.json(product)
   } else {
@@ -45,11 +44,12 @@ router.post('/', authMiddleware, async (req, res) => {
   try {
     const { name, description, code, picture, price, stock } = req.body
 
-    if (!name || !description || !code || !picture || !price || !stock)
+    if (!name || !description || !code || !picture || !price || !stock) {
       return res.status(400).json({
         error: 400,
         message: 'Mandatory fileds are missing'
       })
+    }
 
     const newProduct = { name, description, code, picture, price, stock }
 

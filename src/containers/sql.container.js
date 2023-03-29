@@ -2,7 +2,7 @@ import knex from 'knex'
 
 class Contenedor {
   /** @param {string} filename */
-  constructor(connectionConfig, table) {
+  constructor (connectionConfig, table) {
     // Utilizar knex para conectarse a la base de datos y hacer un log cuando
     // se establezca la conexión, imprimir un error si no se puede conectar
     this.knex = knex(connectionConfig)
@@ -18,7 +18,7 @@ class Contenedor {
    * @param {CustomObject} object
    * @returns {Promise<number>}
    */
-  async save(productBody) {
+  async save (productBody) {
     try {
       return await this.knex(this.table).insert(productBody)
     } catch (error) {
@@ -30,7 +30,7 @@ class Contenedor {
    * @param {number} id
    * @returns {Promise<CustomObject>}
    */
-  async getById(id) {
+  async getById (id) {
     try {
       return this.knex.select('*').from(this.table).where('id', id)
     } catch (error) {
@@ -41,7 +41,7 @@ class Contenedor {
   /** Retrona todos los elementos
    * @returns {Promise<CustomObject[]>}
    */
-  async getAll() {
+  async getAll () {
     try {
       return this.knex.select('*').from(this.table)
     } catch (error) {
@@ -53,7 +53,7 @@ class Contenedor {
    * @param {CustomObject} produ
    * @returns {Promise<number>}
    */
-  async updateById(id, productBody) {
+  async updateById (id, productBody) {
     try {
       return this.knex(this.table).where('id', id).update(productBody)
     } catch (error) {
@@ -64,7 +64,7 @@ class Contenedor {
   /** Borra un elemento en base a su id
    * @param {number} id
    */
-  async deleteById(id) {
+  async deleteById (id) {
     try {
       return this.knex.delete().from(this.table).where('id', id)
     } catch (error) {
@@ -73,7 +73,7 @@ class Contenedor {
   }
 
   /** Borra todos los elementos */
-  async deleteAll() {
+  async deleteAll () {
     try {
       return this.knex.delete().from(this.tabla)
     } catch (error) {
@@ -82,7 +82,7 @@ class Contenedor {
   }
 
   /** Realiza la desconección de la DB */
-  async disconnect() {
+  async disconnect () {
     try {
       return this.knex.destroy()
     } catch (error) {

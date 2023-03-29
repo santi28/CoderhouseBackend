@@ -29,8 +29,7 @@ cartRouter.get('/:id/products', async (req, res) => {
 
   const cart = await cartContainer.getById(id)
 
-  if (!cart)
-    return res.status(404).json({ error: 404, message: 'Cart not found' })
+  if (!cart) { return res.status(404).json({ error: 404, message: 'Cart not found' }) }
 
   return res.json(cart.products)
 })
@@ -41,13 +40,11 @@ cartRouter.post('/:id/products', async (req, res) => {
 
   const product = await productsContainer.getById(productId)
 
-  if (!product)
-    return res.status(404).json({ error: 404, message: 'Product not found' })
+  if (!product) { return res.status(404).json({ error: 404, message: 'Product not found' }) }
 
   const cart = await cartContainer.getById(id)
 
-  if (!cart)
-    return res.status(404).json({ error: 404, message: 'Cart not found' })
+  if (!cart) { return res.status(404).json({ error: 404, message: 'Cart not found' }) }
 
   cart.products.push(product)
   cart.updatedAt = Date.now()
@@ -62,8 +59,7 @@ cartRouter.delete('/:id/products/:idProd', async (req, res) => {
 
   const cart = await cartContainer.getById(id)
 
-  if (!cart)
-    return res.status(404).json({ error: 404, message: 'Cart not found' })
+  if (!cart) { return res.status(404).json({ error: 404, message: 'Cart not found' }) }
 
   cart.products = cart.products.filter((prod) => prod.id !== idProd)
   cart.updatedAt = Date.now()
