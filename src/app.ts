@@ -1,25 +1,30 @@
-import express from 'express'
-import connectToDatabase from './config/mongodb.config'
-import configurations from './config/app.config'
-import routes from './routes/index.router'
-import initTemplateEngine from './config/templateEnginge.config'
+// Modulos de terceros
 import path from 'path'
-import initializePassport from './config/passport.config'
+import express from 'express'
 import cookieParser from 'cookie-parser'
 
-void (async () => {
-  const app = express() // Initializamos el servidor
-  await connectToDatabase() // Conectamos a la base de datos
+// Modulos de configuración
+import config from './config/app.config'
+import connectToDatabase from './config/mongodb.config'
+import initializePassport from './config/passport.config'
+import initTemplateEngine from './config/templateEnginge.config'
 
-  const port = configurations.port
+// Modulo de router
+import routes from './routes/index.router'
+
+void (async () => {
+  const app = express()
+  await connectToDatabase()
+
+  const port = config.port
 
   // Inicializamos el motor de plantillas
   await initTemplateEngine(app)
 
   // Middlewares
   app.use(express.static(path.join(__dirname, 'public')))
-  app.use(express.json())
   app.use(express.urlencoded({ extended: true }))
+  app.use(express.json())
   app.use(cookieParser())
 
   // Inicializamos passport con la estrategia local y autenticación con JWT
@@ -28,7 +33,6 @@ void (async () => {
   // Configuramos las rutas
   app.use('/', routes)
 
-  // Iniciamos el servidor
   app.listen(
     port,
     () => console.log(`🚀 Server running at http://localhost:${port}`)

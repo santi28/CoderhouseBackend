@@ -20,7 +20,7 @@ export const initializePassport = (): void => {
         // Si el usuario existe, se compara con la contraseña, sino la contraseña es vacia
         const isPasswordValid = comparePassword(password, user?.password ?? '')
 
-        if ((user === null) || password === '' || !isPasswordValid) { return done(null, false, { message: 'Invalid credentials' }) }
+        if (!user || !password || !isPasswordValid) { return done(null, false, { message: 'Invalid credentials' }) }
 
         return done(null, user)
       }

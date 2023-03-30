@@ -8,11 +8,14 @@ export const executePolicy = (policies: string[]) => {
 
     const token = req.cookies[configurations.app.jwt.cookie]
 
-    // Si no hay token, redirigimos al usuario a la página de login
+    // Verificamos que el token exista, si no, redirigimos al login
     if (!token) return res.redirect('/login')
 
     try {
+      // Decodificamos el token y verificamos el rol del usuario
       const decoded = jwt.verify(token, configurations.app.jwt.secret) as any
+
+      // Si el rol del usuario no está en la lista de roles permitidos, redirigimos al login
       if (
         policies[0] !== 'AUTHENTICATED' &&
         !policies.includes(decoded.role)

@@ -16,7 +16,7 @@ router.post('/register', uploader.single('profileImage'), expressAsyncHandler(
       const { name, email, password } = req.body
 
       // Validamos que el payload sea correcto
-      if (name === undefined || email === undefined || password === undefined) { return res.status(400).json({ error: 400, message: 'Invalid or incomplete payload' }) }
+      if (!name || !email || !password) { return res.status(400).json({ error: 400, message: 'Invalid or incomplete payload' }) }
 
       // Creamos el usuario, encriptando la contraseña con bcrypt y guardándolo en la base de datos
       const user = await userModel.create({
