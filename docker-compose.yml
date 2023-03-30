@@ -1,9 +1,9 @@
 version: "3.1"
 
 services:
-  mongodb_coderhouse:
-    image: mongo:4.0.3
-    container_name: mongodb_coderhouse
+  coderhouse-mongodb:
+    image: mongo:4
+    container_name: coderhouse-mongodb
     restart: always
     volumes:
       - ./data/db:/data/db
