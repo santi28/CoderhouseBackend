@@ -13,14 +13,17 @@ router.post('/register', uploader.single('profileImage'), expressAsyncHandler(
   async (req: Request, res: Response): Promise<any> => {
     try {
       const profileImage = req.file
-      const { name, email, password } = req.body
+      const { name, address, age, phone, email, password } = req.body
 
       // Validamos que el payload sea correcto
-      if (!name || !email || !password) { return res.status(400).json({ error: 400, message: 'Invalid or incomplete payload' }) }
+      if (!name || !address || !age || !phone || !email || !password) { return res.status(400).json({ error: 400, message: 'Invalid or incomplete payload' }) }
 
       // Creamos el usuario, encriptando la contraseña con bcrypt y guardándolo en la base de datos
       const user = await userModel.create({
         name,
+        address,
+        age,
+        phone,
         email,
         password: hashPassword(password),
         avatar: `${req.protocol}://${req.hostname}:${configurations.port}/uploads/${profileImage?.filename ?? 'default.png'}`
