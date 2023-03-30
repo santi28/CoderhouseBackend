@@ -6,6 +6,7 @@ import configurations from '../config/app.config'
 import uploader from '../utils/multer.helper'
 import passport from 'passport'
 import jwt from 'jsonwebtoken'
+import { sendEmail } from '../services/comunications.service'
 
 const router = Router()
 
@@ -28,6 +29,20 @@ router.post('/register', uploader.single('profileImage'), expressAsyncHandler(
         password: hashPassword(password),
         avatar: `${req.protocol}://${req.hostname}:${configurations.port}/uploads/${profileImage?.filename ?? 'default.png'}`
       })
+
+      await sendEmail(
+        configurations.app.administrator.email,
+        'Nuevo usuario registrado',
+        `
+          <h1>Se ha registrado un nuevo usuario en la plataforma</h1>
+          <p>Nombre: ${name as string}</p>
+          <p>Dirección: ${address as string}</p>
+          <p>Edad: ${user.age?.toString() as string}</p>
+          <p>Teléfono: ${user.phone as string}</p>
+          <p>Email: ${user.email as string}</p>
+          <p>Avatar: ${user.avatar}</p>
+        `
+      )
 
       // Devolvemos el usuario creado
       return res.status(201).json(user)
