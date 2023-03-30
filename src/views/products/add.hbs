@@ -21,17 +21,56 @@
     </a>
   </div>
 </header>
-<main class="flex self-center w-full max-w-6xl px-5 mt-5">
-  <section class="w-full h-20">
-    <h1>Productos</h1>
-  </section>
-  {{#ifEquals session.role 'admin'}}
-    <aside class="flex flex-col w-2/5 h-20 gap-3">
-      <h2>Acciones</h2>
-      <a href="/products/add" class="flex flex-col w-full p-4 border rounded-lg border-zinc-300 bg-zinc-50">
-        <h3 class="text-lg font-semibold">Añadir nuevo producto</h3>
-        <p class="text-sm text-zinc-600">Crear un nuevo producto y publicarlo</p>
-      </a>
-    </aside>
-  {{/ifEquals}}
+<main class='flex justify-center w-full mt-5'>
+  <form
+    class='w-full max-w-md p-4 border rounded-lg border-zinc-200 bg-zinc-50'>
+    <h1 class='mb-5 text-2xl font-medium'>Añadir nuevo producto</h1>
+
+
+    <label class='flex flex-col mt-4'>
+      <span class='text-sm italic text-zinc-500'>
+        Imagen del producto
+      </span>
+      <input
+        class='p-1 border rounded-md border-zinc-300'
+        type='file'
+        name='image'/>
+    </label>
+
+    <label class='flex flex-col mt-4'>
+      <span class='text-sm italic text-zinc-500'>
+        Nombre del producto
+      </span>
+      <input
+        class='p-1 border rounded-md border-zinc-300'
+        type='text'
+        name='name'/>
+    </label>
+
+    <label class='flex flex-col mt-4'>
+      <span class='text-sm italic text-zinc-500'>
+        Descripción del producto
+      </span>
+      <textarea
+        class='p-1 border rounded-md border-zinc-300'
+        name='description'
+        rows='3'></textarea>
+    </label>
+
+    <label class='flex flex-col mt-4'>
+      <span class='text-sm italic text-zinc-500'>
+        Precio del producto
+      </span>
+      <input
+        class='p-1 border rounded-md border-zinc-300'
+        type='number'
+        name='price'/>
+    </label>
+
+    <button
+      type='submit'
+      class='w-full p-2 mt-4 font-medium text-center text-white bg-blue-600 rounded-lg'>
+      Añadir producto
+    </button>
+  </form>
 </main>

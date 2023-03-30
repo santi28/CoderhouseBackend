@@ -23,4 +23,8 @@ router.get('/logout', (req: Request, res: Response) => {
   res.render('logout')
 })
 
+router.get('/products/add', executePolicy(['AUTHENTICATED', 'admin']), (req: Request, res: Response) => {
+  res.render('products/add', { session: req.user })
+})
+
 export default router
