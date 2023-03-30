@@ -131,3 +131,5 @@ dist
 
 # Docker persistent data
 data
+
+src/public/uploads

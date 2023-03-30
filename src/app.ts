@@ -4,18 +4,29 @@ import configurations from './config/app.config'
 import routes from './routes/index.router'
 import initTemplateEngine from './config/templateEnginge.config'
 import path from 'path'
+import initializePassport from './config/passport.config'
+import cookieParser from 'cookie-parser'
 
 void (async () => {
   const app = express() // Initializamos el servidor
   await connectToDatabase() // Conectamos a la base de datos
 
-  const port = configurations.port // Obtenemos el puerto de la configuración
+  const port = configurations.port
 
-  await initTemplateEngine(app) // Inicializamos el motor de plantillas
-  app.use(express.static(path.join(__dirname, 'public'))) // Configura el directorio público
-  app.use(express.json()) // Configura el body parser para json
-  app.use(express.urlencoded({ extended: true })) // Configura el body parser para formularios
-  app.use('/', routes) // Configuramos las rutas
+  // Inicializamos el motor de plantillas
+  await initTemplateEngine(app)
+
+  // Middlewares
+  app.use(express.static(path.join(__dirname, 'public')))
+  app.use(express.json())
+  app.use(express.urlencoded({ extended: true }))
+  app.use(cookieParser())
+
+  // Inicializamos passport con la estrategia local y autenticación con JWT
+  initializePassport()
+
+  // Configuramos las rutas
+  app.use('/', routes)
 
   // Iniciamos el servidor
   app.listen(

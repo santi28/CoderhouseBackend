@@ -25,6 +25,10 @@ const configurations = {
   app: {
     session: {
       secret: process.env.SESSION_SECRET ?? ''
+    },
+    jwt: {
+      secret: process.env.JWT_SECRET ?? '',
+      cookie: process.env.JWT_COOKIE ?? 'sid'
     }
   }
 }

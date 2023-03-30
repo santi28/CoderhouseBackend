@@ -15,8 +15,7 @@ registerForm.addEventListener('submit', async (e) => {
 
   const result = await data.json()
 
-  if (result.error) return alert('Se produjo un error al crear la cuenta')
+  if (result.error) return alert(result)
 
-  alert('Account created successfully')
-  registerForm.reset()
+  location.href = '/login'
 })
