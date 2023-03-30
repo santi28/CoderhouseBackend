@@ -22,15 +22,26 @@
     class="p-4 border rounded-lg bg-zinc-50 border-zinc-300">
     <h2 class="font-semibold">Orden creada con exito</h2>
     <p class="text-sm">
-      Su orden ha sido creada con exito, el numero de orden es: {{order.id}}
+      Su orden ha sido creada con exito, el numero de orden es: {{order._id}}
       <br>
       Le enviaremos un mensaje a su correo electronico y telefono con los detalles de su orden
     </p>
   </div>
-  <div id="cart" class="flex flex-col gap-2"></div>
+  <div id="cart" class="flex flex-col gap-2">
+    {{#each order.products}}
+    <article class="flex overflow-hidden border rounded-lg border-zinc-300">
+      <img class="object-cover h-20 aspect-square" src={{this.product.image}} alt="">
+      <div class="flex flex-col w-full p-2">
+        <div class="flex justify-between w-full">
+          <h2 class="text-base font-semibold">{{this.product.name}}</h2>
+        </div>
+        <span class="text-sm text-zinc-600">${{this.product.price}} · {{this.quantity}}</span>
+      </div>
+    </article>
+    {{/each}}
+  </div>
   <a href="/"
     class="self-end px-4 py-2 text-sm text-center text-white bg-blue-500 rounded-lg hover:bg-blue-600">
     Volver al inicio
   </a>
 </main>
-<script src="/javascript/checkout.js"></script>

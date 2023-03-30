@@ -26,21 +26,26 @@ const CartItem = (product) => {
   return $template.content.firstElementChild
 }
 
-const CartOrderButton = (subtotal) => {
-  const $template = document.createElement('template')
+const makeOrder = async (sessionId) => {
+  const cart = JSON.parse(sessionStorage.getItem('cart')) || []
+  const orderPayload = {
+    userId: sessionId,
+    products: cart
+  }
 
-  $template.innerHTML = `
-    <div class="flex flex-col">
-      <span class="text-sm">
-        Subtotal: $${subtotal || 0}
-      </span>
-      <a href="/checkout"
-        class="w-full px-4 py-2 text-sm text-center text-white bg-blue-500 rounded-lg hover:bg-blue-600">
-        Realizar pedido
-      </a>
-    </div>
-  `
-  return $template.content.firstElementChild
+  const fetchedOrder = await fetch('/api/orders', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(orderPayload)
+  })
+
+  if (!fetchedOrder.ok) return alert('Error al crear la orden')
+  const order = await fetchedOrder.json()
+
+  sessionStorage.removeItem('cart')
+  window.location.href = `/orders/${order._id}`
 }
 
 const renderCart = () => {
@@ -55,8 +60,8 @@ const renderCart = () => {
   })
 
   const subtotal = cart.reduce((acc, product) => acc + product.price * product.quantity, 0)
-  const $cartOrderButton = CartOrderButton(subtotal)
-  $cart.appendChild($cartOrderButton)
+  const $subtotal = document.querySelector('#subtotal')
+  $subtotal.innerHTML = `$${subtotal}`
 }
 
 const addToCart = async (productId) => {
