@@ -21,6 +21,23 @@ router.get(
   )
 )
 
+router.get(
+  '/:id',
+  expressAsyncHandler(
+    async (req: Request, res: Response): Promise<any> => {
+      try {
+        const { id } = req.params
+        const product = await productModel.findById(id)
+
+        return res.status(200).json(product)
+      } catch (error) {
+        console.log(error)
+        return res.status(500).json({ error: 500, message: 'Internal server error' })
+      }
+    }
+  )
+)
+
 router.post(
   '/', uploader.single('image'),
   expressAsyncHandler(

@@ -19,7 +19,7 @@ export const executePolicy = (policies: string[]) => {
       if (
         policies[0] !== 'AUTHENTICATED' &&
         !policies.includes(decoded.role)
-      ) return res.redirect('/login')
+      ) return res.redirect(req.headers.referer ?? '/')
 
       // Si el token es válido, lo añadimos a la request
       req.user = decoded
