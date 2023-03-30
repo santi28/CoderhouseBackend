@@ -22,14 +22,14 @@
   </div>
 </header>
 <main class="flex self-center w-full max-w-6xl px-5 mt-5">
-  <section class="w-full h-20">
-    <h1>Productos</h1>
+  <section class="flex flex-col w-full h-20 gap-2">
+    <h1 class="text-lg font-semibold">Productos</h1>
   </section>
   {{#ifEquals session.role 'admin'}}
-    <aside class="flex flex-col w-2/5 h-20 gap-3">
-      <h2>Acciones</h2>
+    <aside class="flex flex-col w-2/5 h-20 gap-2">
+      <h2 class="text-lg font-semibold">Acciones</h2>
       <a href="/products/add" class="flex flex-col w-full p-4 border rounded-lg border-zinc-300 bg-zinc-50">
-        <h3 class="text-lg font-semibold">Añadir nuevo producto</h3>
+        <h3 class="text-base font-semibold">Añadir nuevo producto</h3>
         <p class="text-sm text-zinc-600">Crear un nuevo producto y publicarlo</p>
       </a>
     </aside>
