@@ -1,0 +1,11 @@
+<main
+  class='self-center w-full max-w-md p-4 mt-10 border rounded-lg border-zinc-300 bg-zinc-100'>
+  <h1 class='mb-5 text-2xl font-medium'>Esperamos verte pronto</h1>
+  <p class='white'>Seras redirigido a la pagina de inicio en 5 segundos.
+    Si la pagina no se redirige automaticamente, haz click
+    <a class='text-blue-500' href='/login'>aqui</a>.
+  </p>
+</main>
+<script>
+  setTimeout(() => { window.location.href = '/login'; }, 5000);
+</script>
