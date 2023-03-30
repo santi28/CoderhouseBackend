@@ -3,7 +3,7 @@ import expressAsyncHandler from 'express-async-handler'
 
 import orderModel from '../dao/mongo/order.dao'
 import userModel from '../dao/mongo/user.dao'
-import { sendEmail, sendSMS } from '../services/comunications.service'
+import { sendEmail, sendSMS, sendWhatsApp } from '../services/comunications.service'
 import configurations from '../config/app.config'
 
 const router = Router()
@@ -40,6 +40,10 @@ router.post(
         if (!gettedOrder) { throw new Error('Order not found') }
         const productsList = gettedOrder.products as unknown as Array<{ product: IProduct, quantity: number }>
 
+        console.log(
+          `📦 Order ${gettedOrder._id.toString()} created for user ${user?.name as string}`
+        )
+
         // Envia un sms al usuario con el detalle de la orden y el estado de la misma
         await sendSMS(
           user?.phone as string,
@@ -71,6 +75,22 @@ router.post(
               <p>-----------------</p>
               `).join('')}
             <p>Total: ${gettedOrder.total}</p>
+          `
+        )
+
+        await sendWhatsApp(
+          user?.phone as string,
+          `
+            Se ha recibido una nueva orden en la plataforma
+            Usuario: ${user?.name as string}
+            Detalle de la orden (${gettedOrder._id.toString()}):
+              ${productsList.map((product) => `
+              Producto: ${product.product.name}
+              Precio: ${product.product.price}
+              Cantidad: ${product.quantity}
+              -----------------
+              `).join('')}
+            Total: ${gettedOrder.total}
           `
         )
 
