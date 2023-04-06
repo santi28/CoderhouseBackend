@@ -66,4 +66,7 @@ export const login = async (req: Request, res: Response): Promise<any> => {
     .json({ token, user: tokenPayload })
 }
 
-export default { register, login }
+export default {
+  register,
+  login
+}
