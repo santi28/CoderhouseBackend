@@ -26,10 +26,7 @@ router.get('/login', (req: Request, res: Response) => {
 })
 
 router.get('/logout', (req: Request, res: Response) => {
-  // Borramos la cookie de sesión
   res.clearCookie(configurations.app.jwt.cookie)
-
-  // Mostramos la vista de logout
   res.render('logout')
 })
 
