@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import productModel from '../dao/mongo/product.dao'
+import productModel from '../dao/mongo/product.model'
 import configurations from '../config/app.config'
 
 export const getProducts = async (req: Request, res: Response): Promise<any> => {

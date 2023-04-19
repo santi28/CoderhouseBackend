@@ -1,7 +1,8 @@
 import { Request, Response } from 'express'
 
-import orderModel from '../dao/mongo/order.dao'
-import userModel from '../dao/mongo/user.dao'
+import orderModel from '../dao/mongo/order.model'
+import UserDAO from '../dao/mongo/user.dao'
+
 import { sendEmail, sendSMS, sendWhatsApp } from '../services/comunications.service'
 import configurations from '../config/app.config'
 
@@ -12,11 +13,13 @@ interface IProduct {
   quantity: number
 }
 
+const userDAO = new UserDAO()
+
 export const createOrder = async (req: Request, res: Response): Promise<void> => {
   try {
     const { userId, products } = req.body
 
-    const user = await userModel.findById(userId)
+    const user = await userDAO.findById(userId)
 
     const order = await orderModel.create({
       user: userId,

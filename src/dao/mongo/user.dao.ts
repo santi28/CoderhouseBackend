@@ -1,14 +1,30 @@
-import mongoose from 'mongoose'
+import { Document } from 'mongoose'
+import UserModel from './models/user.model'
 
-const UserSchema = new mongoose.Schema({
-  name: String,
-  address: String,
-  age: Number,
-  phone: String,
-  email: { type: String, unique: true },
-  password: String,
-  role: { type: String, default: 'user' },
-  avatar: { type: String, default: 'default.png' }
-}, { timestamps: true })
+export interface User {
+  name: string
+  address: string
+  age: number
+  phone: string
+  email: string
+  password: string
+  role?: string
+  avatar?: string
+}
 
-export default mongoose.model('User', UserSchema)
+export type UserDocument = User & Document
+
+export default class UserDAO {
+  public async create (user: User) {
+    const newUser = new UserModel(user)
+    return await newUser.save()
+  }
+
+  public async findByEmail (email: string) {
+    return await UserModel.findOne({ email })
+  }
+
+  public async findById (id: string) {
+    return await UserModel.findById(id)
+  }
+}

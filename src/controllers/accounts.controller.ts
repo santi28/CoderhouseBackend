@@ -2,9 +2,11 @@ import { Request, Response } from 'express'
 
 import jwt from 'jsonwebtoken'
 import config from '../config/app.config'
-import userModel from '../dao/mongo/user.dao'
-import { hashPassword } from '../utils/bcrypt.helper'
 import { sendEmail } from '../services/comunications.service'
+import UserDAO from '../dao/mongo/user.dao'
+// import { hashPassword } from '../utils/bcrypt.helper'
+
+const userDAO = new UserDAO()
 
 export const register = async (req: Request, res: Response): Promise<any> => {
   try {
@@ -14,15 +16,19 @@ export const register = async (req: Request, res: Response): Promise<any> => {
     // Validamos que el payload sea correcto
     if (!name || !address || !age || !phone || !email || !password) { return res.status(400).json({ error: 400, message: 'Invalid or incomplete payload' }) }
 
+    // user.password = hashPassword(password)
+    // user.role = role ?? 'user'
+    // user.avatar = avatar ?? 'public/images/avatars/default.png'
+
     // Creamos el usuario, encriptando la contraseña con bcrypt y guardándolo en la base de datos
-    const user = await userModel.create({
+    const user = await userDAO.create({
       name,
       address,
       age,
       phone,
       email,
-      password: hashPassword(password),
-      avatar: `${req.protocol}://${req.hostname}:${config.port}/uploads/${profileImage?.filename ?? 'default.png'}`
+      password,
+      avatar: profileImage?.path ?? 'public/images/avatars/default.png'
     })
 
     await sendEmail(
