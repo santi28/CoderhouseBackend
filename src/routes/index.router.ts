@@ -8,6 +8,7 @@ import appRouter from './app.router'
 const router = Router()
 
 router.use('/', appRouter)
+
 router.use('/api/accounts', accountsRouter)
 router.use('/api/products', productsRouter)
 router.use('/api/orders', ordersRouter)

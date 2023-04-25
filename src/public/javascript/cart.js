@@ -1,6 +1,8 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 
+const $orderButton = document.querySelector('#order-button')
+
 const CartItem = (product) => {
   const { _id, name, price, quantity, image } = product
 
@@ -33,6 +35,8 @@ const makeOrder = async (sessionId) => {
     products: cart
   }
 
+  $orderButton.disabled = true
+
   const fetchedOrder = await fetch('/api/orders', {
     method: 'POST',
     headers: {
@@ -43,6 +47,8 @@ const makeOrder = async (sessionId) => {
 
   if (!fetchedOrder.ok) return alert('Error al crear la orden')
   const order = await fetchedOrder.json()
+
+  $orderButton.disabled = false
 
   sessionStorage.removeItem('cart')
   window.location.href = `/orders/${order._id}`

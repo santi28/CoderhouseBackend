@@ -1,7 +1,9 @@
 import passport from 'passport'
 import { Strategy as LocalStrategy } from 'passport-local'
-import userModel from '../dao/mongo/user.dao'
 import { comparePassword } from '../utils/bcrypt.helper'
+import UserDAO from '../dao/mongo/user.dao'
+
+const userDAO = new UserDAO()
 
 export const initializePassport = (): void => {
   passport.use(
@@ -16,7 +18,7 @@ export const initializePassport = (): void => {
         })
 
         // Buscamos el usuario por email
-        const user = await userModel.findOne({ email })
+        const user = await userDAO.findByEmail(email)
         // Si el usuario existe, se compara con la contraseña, sino la contraseña es vacia
         const isPasswordValid = comparePassword(password, user?.password ?? '')
 

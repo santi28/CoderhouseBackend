@@ -44,7 +44,8 @@
         <span class="text-sm">Subtotal: <span id="subtotal">$0</span></span>
         <button
           onclick="makeOrder('{{session.id}}')"
-          class="w-full px-4 py-2 text-sm text-center text-white bg-blue-500 rounded-lg hover:bg-blue-600">
+          id="order-button"
+          class="w-full px-4 py-2 text-sm text-center text-white bg-blue-500 rounded-lg hover:bg-blue-600 disabled:bg-zinc-400 disabled:border disabled:border-zinc-300">
           Realizar pedido
         </button>
       </div>

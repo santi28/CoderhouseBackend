@@ -23,12 +23,31 @@ const configurations = {
     password: process.env.DB_PASS ?? ''
   },
   app: {
+    administrator: {
+      name: process.env.ADMIN_NAME ?? 'Admin',
+      email: process.env.ADMIN_EMAIL ?? '',
+      phone: process.env.ADMIN_PHONE ?? ''
+    },
     session: {
       secret: process.env.SESSION_SECRET ?? ''
     },
     jwt: {
       secret: process.env.JWT_SECRET ?? '',
       cookie: process.env.JWT_COOKIE ?? 'sid'
+    },
+    mailer: {
+      host: process.env.MAILER_HOST ?? '',
+      port: Number(process.env.MAILER_PORT) ?? 587,
+      auth: {
+        user: process.env.MAILER_USER ?? '',
+        pass: process.env.MAILER_PASS ?? ''
+      }
+    },
+    twilio: {
+      accountSid: process.env.TWILIO_ACCOUNT_SID ?? '',
+      authToken: process.env.TWILIO_AUTH_TOKEN ?? '',
+      phoneNumber: process.env.TWILIO_PHONE_NUMBER ?? '',
+      whatsappNumber: process.env.TWILIO_WHATSAPP_NUMBER ?? ''
     }
   }
 }
