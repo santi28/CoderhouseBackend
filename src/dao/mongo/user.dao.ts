@@ -27,4 +27,8 @@ export default class UserDAO {
   public async findById (id: string) {
     return await UserModel.findById(id)
   }
+
+  public async findAll () {
+    return await UserModel.find()
+  }
 }
