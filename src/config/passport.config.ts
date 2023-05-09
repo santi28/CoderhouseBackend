@@ -1,7 +1,7 @@
 import passport from 'passport'
 import { Strategy as LocalStrategy } from 'passport-local'
 import { comparePassword } from '../utils/bcrypt.helper'
-import UserDAO from '../dao/mongo/user.dao'
+import UserDAO from '../dao/mongo/users.dao'
 
 const userDAO = new UserDAO()
 

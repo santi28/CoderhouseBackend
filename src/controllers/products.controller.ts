@@ -1,10 +1,16 @@
 import { Request, Response } from 'express'
-import productModel from '../dao/mongo/product.model'
+import ProductService from '../dao/mongo/products.dao'
 import configurations from '../config/app.config'
 
+const productService = new ProductService()
+
 export const getProducts = async (req: Request, res: Response): Promise<any> => {
+  const { tags } = req.query
+
   try {
-    const products = await productModel.find()
+    // const products = productService.findAllByTags(tags as string[])
+
+    const products = tags ? await productService.findAllByTags(tags as string[]) : await productService.findAll()
 
     return res.status(200).json(products)
   } catch (error) {
@@ -16,7 +22,7 @@ export const getProducts = async (req: Request, res: Response): Promise<any> => 
 export const getProductById = async (req: Request, res: Response): Promise<any> => {
   try {
     const { id } = req.params
-    const product = await productModel.findById(id)
+    const product = await productService.findById(id)
 
     return res.status(200).json(product)
   } catch (error) {
@@ -28,16 +34,17 @@ export const getProductById = async (req: Request, res: Response): Promise<any> 
 export const createProduct = async (req: Request, res: Response): Promise<any> => {
   try {
     const image = req.file
-    const { name, description, price } = req.body
+    const { title, description, price, tags } = req.body
 
     // Validamos que el payload sea correcto
-    if (!name || !description || !price) { return res.status(400).json({ error: 400, message: 'Invalid or incomplete payload' }) }
+    if (!title || !description || !price || tags.length < 1) { return res.status(400).json({ error: 400, message: 'Invalid or incomplete payload' }) }
 
-    const product = await productModel.create({
-      name,
+    const product = await productService.create({
+      title,
       description,
       price,
-      image: `${req.protocol}://${req.hostname}:${configurations.port}/uploads/${image?.filename ?? 'placeholder.webp'}`
+      images: [`${req.protocol}://${req.hostname}:${configurations.port}/uploads/${image?.filename ?? 'placeholder.webp'}`],
+      tags
     })
 
     return res.status(201).json(product)

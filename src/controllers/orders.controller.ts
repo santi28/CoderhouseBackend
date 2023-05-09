@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 
 import orderModel from '../dao/mongo/order.model'
-import UserDAO from '../dao/mongo/user.dao'
+import UserDAO from '../dao/mongo/users.dao'
 
 import { sendEmail, sendSMS, sendWhatsApp } from '../services/comunications.service'
 import configurations from '../config/app.config'

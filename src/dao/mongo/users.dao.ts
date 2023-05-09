@@ -14,7 +14,7 @@ export interface User {
 
 export type UserDocument = User & Document
 
-export default class UserDAO {
+export default class UsersDAO {
   public async create (user: User) {
     const newUser = new UserModel(user)
     return await newUser.save()

@@ -3,7 +3,7 @@ import { Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 import config from '../config/app.config'
 import { sendEmail } from '../services/comunications.service'
-import UserDAO from '../dao/mongo/user.dao'
+import UserDAO from '../dao/mongo/users.dao'
 // import { hashPassword } from '../utils/bcrypt.helper'
 
 const userDAO = new UserDAO()
