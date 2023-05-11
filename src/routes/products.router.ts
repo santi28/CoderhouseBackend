@@ -19,4 +19,9 @@ router.post(
   expressAsyncHandler(productsController.createProduct)
 )
 
+router.put(
+  '/:id',
+  expressAsyncHandler(productsController.updateProduct)
+)
+
 export default router

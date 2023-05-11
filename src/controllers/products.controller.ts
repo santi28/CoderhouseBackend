@@ -54,8 +54,32 @@ export const createProduct = async (req: Request, res: Response): Promise<any> =
   }
 }
 
+export const updateProduct = async (req: Request, res: Response): Promise<any> => {
+  try {
+    const { id } = req.params
+    const { title, description, price, tags } = req.body
+
+    // Validamos que el payload sea correcto
+    if (!title || !description || !price || tags.length < 1) { return res.status(400).json({ error: 400, message: 'Invalid or incomplete payload' }) }
+
+    const product = await productService.update(id, {
+      title,
+      description,
+      price,
+      images: [],
+      tags
+    })
+
+    return res.status(200).json(product)
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json({ error: 500, message: 'Internal server error' })
+  }
+}
+
 export default {
   getProducts,
   getProductById,
-  createProduct
+  createProduct,
+  updateProduct
 }

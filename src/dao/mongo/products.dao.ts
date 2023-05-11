@@ -12,11 +12,13 @@ export interface Product {
 export type ProductDocument = Product & Document
 
 export default class ProductsDAO {
+  // Crea un nuevo producto
   public async create (product: Product) {
     const newProduct = new ProductModel(product)
     return await newProduct.save()
   }
 
+  // Obtiene el listado de productos
   public async findAll () {
     return await ProductModel.find()
   }
