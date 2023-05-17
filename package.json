@@ -68,7 +68,8 @@
     "extends": "./node_modules/ts-standard/eslintrc.json",
     "rules": {
       "@typescript-eslint/explicit-function-return-type": "off",
-      "@typescript-eslint/strict-boolean-expressions": 0
+      "@typescript-eslint/strict-boolean-expressions": "off",
+      "@typescript-eslint/no-misused-promises": "off"
     },
     "parserOptions": {
       "project": "./tsconfig.json"

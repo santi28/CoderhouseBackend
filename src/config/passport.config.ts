@@ -10,21 +10,23 @@ export const initializePassport = (): void => {
     'login',
     new LocalStrategy(
       { usernameField: 'email' },
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       async (email, password, done) => {
-        console.log('Initializing login using passport local', {
-          email,
-          password
-        })
+        console.log('🔎 Verificando credenciales')
+        console.log({ email, password })
 
-        // Buscamos el usuario por email
+        // Obtenemos el usuario por el email
         const user = await userDAO.findByEmail(email)
+
+        // Si el usuario no existe, se devuelve un error
+        if (!user) { return done(null, false, { message: 'Invalid user or password' }) }
+
         // Si el usuario existe, se compara con la contraseña, sino la contraseña es vacia
         const isPasswordValid = comparePassword(password, user?.password ?? '')
 
-        if (!user || !password || !isPasswordValid) { return done(null, false, { message: 'Invalid credentials' }) }
+        // Si la contraseña no es valida, se devuelve un error
+        if (!isPasswordValid) { return done(null, false, { message: 'Invalid user or password' }) }
 
-        return done(null, user)
+        return done(null, user) // Si todo sale bien, se devuelve el usuario
       }
     ))
 }
