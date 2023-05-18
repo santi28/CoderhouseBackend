@@ -34,11 +34,26 @@ export default class UsersDAO {
     return await UserModel.findOne({ email })
   }
 
+  public async findByRecoveryCode (recoveryCode: string) {
+    return await UserModel.findOne({ recoveryCode })
+  }
+
   public async findById (id: string) {
     return await UserModel.findById(id)
   }
 
   public async update (id: string, user: Partial<User>) {
     return await UserModel.findByIdAndUpdate(id, user)
+  }
+
+  public async updatePassword (id: string, password: string) {
+    const hashedPassword = hashPassword(password)
+    return await UserModel.findByIdAndUpdate(
+      id,
+      {
+        password: hashedPassword,
+        $unset: { recoveryCode: 1 }
+      }
+    )
   }
 }

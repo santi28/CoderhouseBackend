@@ -19,9 +19,14 @@ router.post(
   expressAsyncHandler(accountsController.login)
 )
 
-router.get(
+router.post(
   '/forgot-password',
   expressAsyncHandler(accountsController.forgotPassword)
+)
+
+router.put(
+  '/reset-password',
+  expressAsyncHandler(accountsController.resetPasswordByRecoveryCode)
 )
 
 export default router

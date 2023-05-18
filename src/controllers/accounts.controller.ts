@@ -1,11 +1,10 @@
 import { Request, Response } from 'express'
-
 import jwt from 'jsonwebtoken'
+
 import config from '../config/app.config'
 import { sendEmail } from '../services/comunications.service'
 import UserDAO, { UserDocument } from '../dao/mongo/users.dao'
 import getCompiledHTML, { Layouts } from '../utils/mailer/layout.helper'
-// import { hashPassword } from '../utils/bcrypt.helper'
 
 const userDAO = new UserDAO()
 
@@ -110,4 +109,23 @@ export const forgotPassword = async (req: Request, res: Response): Promise<any> 
 
   // Devolvemos un OK indicando que el correo fue enviado
   return res.status(200).json({ message: 'Email sent' })
+}
+
+export const resetPasswordByRecoveryCode = async (req: Request, res: Response): Promise<any> => {
+  const { recoveryCode, password } = req.body
+
+  // Validamos que el payload sea correcto
+  if (!recoveryCode || !password) { return res.status(400).json({ error: 400, message: 'Invalid or incomplete payload' }) }
+
+  // Obtenemos el usuario por el OTP
+  const user = await userDAO.findByRecoveryCode(recoveryCode)
+
+  // Si el usuario no existe, se devuelve un error
+  if (!user) { return res.status(404).json({ error: 404, message: 'User not found' }) }
+
+  // Actualizamos el usuario con la nueva contraseña
+  await userDAO.updatePassword(user._id.toString(), password)
+
+  // Devolvemos un OK indicando que la contraseña fue actualizada
+  return res.status(200).json({ message: 'Password updated' })
 }
