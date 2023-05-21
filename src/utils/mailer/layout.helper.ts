@@ -4,12 +4,14 @@ import path from 'path'
 
 export enum Layouts {
   NEW_REGISTER = 'new_register',
-  FORGOT_PASSWORD = 'forgot_password'
+  FORGOT_PASSWORD = 'forgot_password',
+  NEW_ORDER = 'new_order'
 }
 
 interface LayoutDataMap {
   [Layouts.NEW_REGISTER]: NewRegisterData
   [Layouts.FORGOT_PASSWORD]: ForgotPasswordData
+  [Layouts.NEW_ORDER]: NewOrderData
 }
 
 interface NewRegisterData {
@@ -23,6 +25,11 @@ interface ForgotPasswordData {
   name: string
   email: string
   url: string
+}
+
+interface NewOrderData {
+  name: string
+  order_number: number
 }
 
 export function getCompiledTemplate (layout: Layouts) {

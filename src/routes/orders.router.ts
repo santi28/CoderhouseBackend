@@ -1,22 +1,23 @@
 import { Router } from 'express'
-import expressAsyncHandler from 'express-async-handler'
-import ordersController from '../controllers/orders.controller'
+import * as ordersController from '../controllers/orders.controller'
+import { executePolicy } from '../middlewares/authenticate.middleware'
 
 const router = Router()
 
 router.post(
   '/',
-  expressAsyncHandler(ordersController.createOrder)
+  executePolicy(['AUTHENTICATED']),
+  ordersController.createOrder
 )
 
-router.get(
-  '/',
-  expressAsyncHandler(ordersController.getOrders)
-)
+// router.get(
+//   '/',
+//   expressAsyncHandler(ordersController.getOrders)
+// )
 
-router.get(
-  '/:id',
-  expressAsyncHandler(ordersController.getOrderById)
-)
+// router.get(
+//   '/:id',
+//   expressAsyncHandler(ordersController.getOrderById)
+// )
 
 export default router
