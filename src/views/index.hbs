@@ -22,9 +22,9 @@
     <div class="grid grid-cols-2 gap-2">
       {{#each products}}
         <article class="w-full overflow-hidden border rounded-lg border-zinc-300">
-          <img class="object-cover w-full aspect-video" src={{this.image}} alt="">
+          <img class="object-cover w-full aspect-video" src="{{this.images.[0]}}" alt="">
           <div class="p-4">
-            <h2 class="text-lg font-semibold">{{this.name}}</h2>
+            <h2 class="text-lg font-semibold">{{this.title}}</h2>
             <div class="flex justify-between">
               <span class="italic text-zinc-600">${{this.price}}</span>
               <button

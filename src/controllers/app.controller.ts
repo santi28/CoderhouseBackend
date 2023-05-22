@@ -3,7 +3,10 @@ import axios from 'axios'
 import config from '../config/app.config'
 
 export const home = async (req: Request, res: Response): Promise<void> => {
+  // Obtenemos los productos
   const { data: products } = await axios.get(`http://${req.hostname}:${config.port}/api/products`)
+  console.log(products)
+
   res.render('index', { session: req.user, products })
 }
 

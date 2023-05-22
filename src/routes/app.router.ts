@@ -1,13 +1,12 @@
 import { Router } from 'express'
-import { executePolicy } from '../middlewares/authenticate.middleware'
-import expressAsyncHandler from 'express-async-handler'
+import { executeFrontendPolicy } from '../middlewares/authenticate.middleware'
 import appController from '../controllers/app.controller'
 
 const router = Router()
 
 router.get(
-  '/', executePolicy(['AUTHENTICATED']),
-  expressAsyncHandler(appController.home)
+  '/', executeFrontendPolicy(['AUTHENTICATED']),
+  appController.home
 )
 
 router.get(
@@ -27,14 +26,14 @@ router.get(
 
 router.get(
   'products/add',
-  executePolicy(['AUTHENTICATED']),
+  executeFrontendPolicy(['AUTHENTICATED']),
   appController.addProduct
 )
 
 router.get(
   '/orders/:id',
-  executePolicy(['AUTHENTICATED']),
-  expressAsyncHandler(appController.order)
+  executeFrontendPolicy(['AUTHENTICATED']),
+  appController.order
 )
 
 export default router

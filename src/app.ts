@@ -11,6 +11,7 @@ import initTemplateEngine from './config/templateEnginge.config'
 
 // Modulo de router
 import routes from './routes/index.router'
+import cors from 'cors'
 
 void (async () => {
   const app = express()
@@ -22,6 +23,7 @@ void (async () => {
   await initTemplateEngine(app)
 
   // Middlewares
+  app.use(cors())
   app.use(express.static(path.join(__dirname, 'public')))
   app.use(express.urlencoded({ extended: true }))
   app.use(express.json())
