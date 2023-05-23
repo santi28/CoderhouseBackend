@@ -10,6 +10,27 @@ export const home = async (req: Request, res: Response): Promise<void> => {
   res.render('index', { session: req.user, products })
 }
 
+export const categories = async (req: Request, res: Response): Promise<void> => {
+  const categories = {
+    games: 'Videojuegos',
+    consoles: 'Consolas'
+  }
+
+  const { id } = req.params
+  const category = categories[id as keyof typeof categories]
+
+  if (!category) {
+    res.redirect('/')
+    return
+  }
+
+  // Obtenemos los productos
+  const { data: products } = await axios.get(`http://${req.hostname}:${config.port}/api/products?category=${id}`)
+  console.log(products)
+
+  res.render('category', { session: req.user, products, category })
+}
+
 export const register = (req: Request, res: Response): void => {
   res.render('register')
 }
@@ -32,13 +53,4 @@ export const order = async (req: Request, res: Response): Promise<void> => {
 
   const { data: order } = await axios.get(`http://${req.hostname}:${config.port}/api/orders/${id}`)
   res.render('order', { session: req.user, order })
-}
-
-export default {
-  home,
-  register,
-  login,
-  logout,
-  addProduct,
-  order
 }

@@ -1,12 +1,18 @@
 import { Router } from 'express'
 import { executeFrontendPolicy } from '../middlewares/authenticate.middleware'
-import appController from '../controllers/app.controller'
+import * as appController from '../controllers/app.controller'
 
 const router = Router()
 
 router.get(
   '/', executeFrontendPolicy(['AUTHENTICATED']),
   appController.home
+)
+
+router.get(
+  '/categories/:id',
+  executeFrontendPolicy(['AUTHENTICATED']),
+  appController.categories
 )
 
 router.get(
