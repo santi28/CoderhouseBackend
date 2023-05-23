@@ -48,6 +48,23 @@ export const createProduct = async (req: Request, res: Response): Promise<any> =
   }
 }
 
+export const getProductBySlug = async (req: Request, res: Response): Promise<any> => {
+  const { slug } = req.params
+
+  try {
+    const product = await productsDAO.findBySlug(slug)
+
+    if (!product) {
+      return res.status(404).json({ error: 404, message: 'Product not found' })
+    }
+
+    return res.status(200).json(product)
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json({ error: 500, message: 'Internal server error' })
+  }
+}
+
 // export const getProductById = async (req: Request, res: Response): Promise<any> => {
 //   try {
 //     const { id } = req.params

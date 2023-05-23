@@ -21,6 +21,8 @@ export const addProductToCart = async (req: Request, res: Response) => {
   const { id: userId } = req.user as any
   const { productId, quantity } = req.body
 
+  console.log(req.body)
+
   if (!productId || !quantity) {
     return res.status(400).json({ message: 'Faltan datos' })
   }

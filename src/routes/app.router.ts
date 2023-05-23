@@ -16,6 +16,30 @@ router.get(
 )
 
 router.get(
+  '/products/add',
+  executeFrontendPolicy(['admin']),
+  appController.addProduct
+)
+
+router.get(
+  '/products/:id',
+  executeFrontendPolicy(['AUTHENTICATED']),
+  appController.product
+)
+
+router.get(
+  '/orders/confirm',
+  executeFrontendPolicy(['AUTHENTICATED']),
+  appController.confirmOrder
+)
+
+router.get(
+  '/orders/placed',
+  executeFrontendPolicy(['AUTHENTICATED']),
+  appController.placedOrder
+)
+
+router.get(
   '/register',
   appController.register
 )

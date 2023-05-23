@@ -31,9 +31,6 @@ export default class ProductsDAO {
   }
 
   public async findBySlug (slug: string) {
-    return await ProductModel.findOne({
-      slug,
-      deleted: false
-    })
+    return await ProductModel.findOne({ slug })
   }
 }

@@ -15,7 +15,8 @@ registerForm.addEventListener('submit', async (e) => {
 
   const result = await data.json()
 
-  if (result.error) return alert(result)
+  if (result.error) return alert(result.error)
 
+  console.log({ result })
   location.href = '/login'
 })

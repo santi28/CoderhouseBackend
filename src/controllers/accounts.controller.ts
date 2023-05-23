@@ -37,7 +37,7 @@ export const register = async (req: Request, res: Response): Promise<any> => {
     )
 
     // Enviamos un correo al administrador con los datos del usuario
-    await sendEmail(
+    void sendEmail(
       config.app.administrator.email,
       'Nuevo usuario registrado',
       html
@@ -101,7 +101,7 @@ export const forgotPassword = async (req: Request, res: Response): Promise<any> 
   )
 
   // Enviamos un correo al usuario con el OTP
-  await sendEmail(
+  void sendEmail(
     user.email,
     'Recuperación de contraseña',
     html

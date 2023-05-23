@@ -10,6 +10,8 @@ router.get('/', productsController.getProducts)
 
 router.post('/', uploader.single('picture'), productsController.createProduct)
 
+router.get('/:slug', productsController.getProductBySlug)
+
 // router.get(
 //   '/',
 //   expressAsyncHandler(productsController.getProducts)
