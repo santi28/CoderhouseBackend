@@ -34,7 +34,7 @@ interface NewOrderData {
 
 export function getCompiledTemplate (layout: Layouts) {
   const layoutSource = fs.readFileSync(
-    path.join(__dirname, `../../utils/mailer/${layout}.layout.hbs`),
+    path.join(__dirname, `../../../public/mails/${layout}.layout.hbs`),
     'utf8'
   )
 

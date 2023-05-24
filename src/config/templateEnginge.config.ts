@@ -5,8 +5,8 @@ import { Express } from 'express'
 export default async function initTemplateEngine (app: Express): Promise<void> {
   const hbs = engine({
     extname: 'hbs',
-    layoutsDir: path.join(__dirname, '../views/layouts'),
-    partialsDir: path.join(__dirname, '../views/partials'),
+    layoutsDir: path.join(__dirname, '../../views/layouts'),
+    partialsDir: path.join(__dirname, '../../views/partials'),
     defaultLayout: 'main',
     helpers: {
       ifEquals: function (arg1: any, arg2: any, options: any) {
@@ -19,5 +19,5 @@ export default async function initTemplateEngine (app: Express): Promise<void> {
   app.engine('hbs', hbs)
   app.set('view engine', 'hbs')
 
-  app.set('views', './src/views')
+  app.set('views', './views')
 }
