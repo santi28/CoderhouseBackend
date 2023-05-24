@@ -4,11 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node dist/app.js",
+    "start": "node ./src/app.js",
     "start:dev": "nodemon ./src/app.ts",
     "lint": "ts-standard --fix",
     "test": "mocha --require ts-node/register ./tests/**/*.spec.ts",
-    "build": "tsc && cp -r ./src/views ./dist/views && cp -r ./src/public ./dist/public"
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
