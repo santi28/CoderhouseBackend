@@ -32,6 +32,7 @@ export default async function connectToDatabase (): Promise<void> {
 
     return console.log('✅ Connected to MongoDB database successfully')
   } catch (error) {
+    console.error(error)
     console.error('❌ Error while trying to connect to MongoDB')
     return process.exit(1)
   }
