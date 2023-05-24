@@ -20,7 +20,8 @@ const configurations = {
     port: Number(process.env.DB_PORT) ?? 27017,
     name: process.env.DB_NAME ?? 'coderhouse',
     username: process.env.DB_USER ?? '',
-    password: process.env.DB_PASS ?? ''
+    password: process.env.DB_PASS ?? '',
+    uri: process.env.DB_URI ?? ''
   },
   app: {
     administrator: {
