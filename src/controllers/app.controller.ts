@@ -6,13 +6,15 @@ import CartDAO from '../dao/mongo/carts.dao'
 const cartDAO = new CartDAO()
 
 export const home = async (req: Request, res: Response): Promise<void> => {
-  // Obtenemos los productos
-  const { data: products } = await axios.get(`http://${req.hostname}:${config.port}/api/products`)
+  const url = `${req.protocol}://${req.get('host') as string}`
+  const { data: products } = await axios.get(`${url}/api/products`)
 
   res.render('index', { session: req.user, products })
 }
 
 export const categories = async (req: Request, res: Response): Promise<void> => {
+  const url = `${req.protocol}://${req.get('host') as string}`
+
   const categories = {
     games: 'Videojuegos',
     consoles: 'Consolas'
@@ -27,7 +29,7 @@ export const categories = async (req: Request, res: Response): Promise<void> => 
   }
 
   // Obtenemos los productos
-  const { data: products } = await axios.get(`http://${req.hostname}:${config.port}/api/products?category=${id}`)
+  const { data: products } = await axios.get(`${url}/api/products?category=${id}`)
 
   res.render('category', { session: req.user, products, category })
 }
@@ -36,7 +38,8 @@ export const product = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params
 
   try {
-    const { data: product } = await axios.get(`http://${req.hostname}:${config.port}/api/products/${id}`)
+    const url = `${req.protocol}://${req.get('host') as string}`
+    const { data: product } = await axios.get(`${url}/api/products/${id}`)
 
     if (!product) {
       res.redirect('/')
@@ -96,8 +99,9 @@ export const logout = (req: Request, res: Response): void => {
 }
 
 export const order = async (req: Request, res: Response): Promise<void> => {
+  const url = `${req.protocol}://${req.get('host') as string}`
   const { id } = req.params
 
-  const { data: order } = await axios.get(`http://${req.hostname}:${config.port}/api/orders/${id}`)
+  const { data: order } = await axios.get(`${url}/api/orders/${id}`)
   res.render('order', { session: req.user, order })
 }
