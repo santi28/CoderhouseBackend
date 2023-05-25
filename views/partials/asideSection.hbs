@@ -1,0 +1,14 @@
+<aside class="flex flex-col w-2/5 min-h-[200px] gap-4 pl-4 border-l border-zinc-300">
+  {{> cart}}
+  {{#ifEquals session.role 'admin'}}
+  <section class="flex flex-col gap-2">
+    <h2 class="text-lg font-semibold">Acciones</h2>
+    <a href="/products/add" class="flex flex-col w-full p-4 border rounded-lg border-zinc-300 bg-zinc-50">
+      <h3 class="text-base font-semibold">Añadir nuevo producto</h3>
+      <p class="text-sm text-zinc-600">Crear un nuevo producto y publicarlo</p>
+    </a>
+  </section>
+  {{/ifEquals}}
+</aside>
+
+<script src="/javascript/cart.js"></script>

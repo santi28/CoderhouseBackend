@@ -1,0 +1,18 @@
+{{> header}}
+<div class="flex self-center w-full max-w-6xl gap-4 px-5 mt-5">
+  <main class="flex flex-col w-3/4 h-20 gap-2">
+    <div class="flex items-center justify-between w-full">
+      <h1 class="text-xl font-semibold">Productos de {{category}}</h1>
+      <nav class="flex gap-2">
+        <a class="px-4 py-2 rounded-xl bg-sky-500 text-sky-50" href="/categories/games">Videojuegos</a>
+        <a class="px-4 py-2 rounded-xl bg-sky-500 text-sky-50" href="/categories/consoles">Consolas</a>
+      </nav>
+    </div>
+    <div class="grid grid-cols-2 gap-2">
+      {{#each products}}
+        {{> product}}
+      {{/each}}
+    </div>
+  </main>
+  {{> asideSection}}
+</div>

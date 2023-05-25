@@ -1,0 +1,15 @@
+{{> header}}
+<div class="flex self-center w-full max-w-6xl gap-4 px-5 mt-5">
+  <main class="flex flex-col w-3/4 gap-4 p-6">
+    <img class="box-border w-full rounded-2xl" src="{{product.images.[0]}}" alt="{{name}}">
+    <div class="flex justify-between">
+      <div>
+        <h1 class="text-xl font-bold">{{product.title}}</h1>
+        <span class="text-gray-500">{{product.price}}</span>
+      </div>
+      <button onclick="addProduct('{{ product._id }}')" class="px-4 py-2 rounded-lg bg-sky-500 text-sky-50">Add to cart</button>
+    </div>
+    <p>{{product.description}}</p>
+  </main>
+  {{> asideSection}}
+</div>

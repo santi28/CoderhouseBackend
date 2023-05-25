@@ -1,0 +1,67 @@
+{{> header}}
+<main class='flex justify-center w-full mt-5'>
+  <form
+    class='w-full max-w-md p-4 border rounded-lg border-zinc-200 bg-zinc-50'>
+    <h1 class='mb-5 text-2xl font-medium'>Añadir nuevo producto</h1>
+
+
+    <label class='flex flex-col mt-4'>
+      <span class='text-sm italic text-zinc-500'>
+        Imagen del producto
+      </span>
+      <input
+        class='p-1 border rounded-md border-zinc-300'
+        type='file'
+        name='picture'/>
+    </label>
+
+    <label class='flex flex-col mt-4'>
+      <span class='text-sm italic text-zinc-500'>
+        Nombre del producto
+      </span>
+      <input
+        class='p-1 border rounded-md border-zinc-300'
+        type='text'
+        name='title'/>
+    </label>
+
+    <label class='flex flex-col mt-4'>
+      <span class='text-sm italic text-zinc-500'>
+        Descripción del producto
+      </span>
+      <textarea
+        class='p-1 border rounded-md border-zinc-300'
+        name='description'
+        rows='3'></textarea>
+    </label>
+
+    <label class='flex flex-col mt-4'>
+      <span class='text-sm italic text-zinc-500'>
+        Precio del producto
+      </span>
+      <input
+        class='p-1 border rounded-md border-zinc-300'
+        type='number'
+        name='price'/>
+    </label>
+
+    <label class='flex flex-col mt-4'>
+      <span class='text-sm italic text-zinc-500'>
+        Categoría del producto
+      </span>
+      <select
+        class='p-1 border rounded-md border-zinc-300'
+        name='category'>
+        <option value='games'>Videojuegos</option>
+        <option value='consoles'>Conoslas</option>
+      </select>
+    </label>
+
+    <button
+      type='submit'
+      class='w-full p-2 mt-4 font-medium text-center text-white bg-blue-600 rounded-lg'>
+      Añadir producto
+    </button>
+  </form>
+</main>
+<script src="/javascript/addNewProduct.js"></script>
