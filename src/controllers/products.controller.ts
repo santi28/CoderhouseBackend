@@ -21,6 +21,7 @@ export const getProducts = async (req: Request, res: Response): Promise<any> => 
 }
 
 export const createProduct = async (req: Request, res: Response): Promise<any> => {
+  const url = `${req.protocol}://${req.get('host') as string}`
   const image = req.file
   const { title, description, category, price } = req.body as Product
 
@@ -34,7 +35,7 @@ export const createProduct = async (req: Request, res: Response): Promise<any> =
       category,
       price,
       slug: title.toLowerCase().replace(/ /g, '-'),
-      images: [`${req.protocol}://${req.hostname}:${configurations.port}/uploads/${image?.filename ?? 'placeholder.webp'}`]
+      images: [`${url}/uploads/${image?.filename ?? 'placeholder.webp'}`]
     })
 
     return res.status(201).json(product)
